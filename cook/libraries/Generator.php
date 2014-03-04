@@ -1,4 +1,4 @@
-<?php namespace c\libraries;
+<?php namespace cook\libraries;
 
 use Laravel\File;
 use Laravel\Config;
@@ -29,10 +29,10 @@ class Generator {
 
 	protected function getTokens($template, $firstCall = false)
 	{
-		$templatesPath = Config::get('c::generator.templates_path');
-		$templatesExtention = Config::get('c::generator.templates_extension');
-		$tokenPrefix = Config::get('c::generator.token_prefix');
-		$tokenPostfix = Config::get('c::generator.token_postfix');
+		$templatesPath = Config::get('cook::generator.templates_path');
+		$templatesExtention = Config::get('cook::generator.templates_extension');
+		$tokenPrefix = Config::get('cook::generator.token_prefix');
+		$tokenPostfix = Config::get('cook::generator.token_postfix');
 
 		if ($firstCall)
 		{
@@ -65,6 +65,20 @@ class Generator {
 		}
 
 		return $this->tokens;
+	}
+
+	
+
+	public static function getTemplate($template, $templatesPath = null)
+	{
+		$templatesPath = ($templatesPath) ?: Config::get('cook::generator.templates_path');
+
+		if (File::exists($templatesPath.$template))
+		{
+			return $templatesPath.$template;
+		}
+
+		return false;
 	}
 
 }

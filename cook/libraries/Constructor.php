@@ -1,13 +1,15 @@
-<?php namespace c\libraries;
+<?php namespace cook\libraries;
 
 use Laravel\Config;
+use Laravel\Str;
 
 class Constructor {
 
 	/**
-	 * Determine arguments storage.
+	 * Determine name and arguments storage.
 	 *
 	 */
+	public $name;
 	public $arguments = array();
 
 	/**
@@ -22,24 +24,27 @@ class Constructor {
 	 * Prepare arguments for future work
 	 *
 	 */
-	public function __construct(array $arguments)
+	public function __construct($name, array $arguments)
 	{
-		$this->parseArguments($arguments);
+		$this->parseArguments($name, $arguments);
 	}
 
 	/**
 	 * Parse arguments, given from Artisan CLI, to Constructor format and fills them the arguments property.
 	 *
+	 * @param 	string 	$name
 	 * @param 	array 	$arguments
-	 * @return 	array
+	 * @return 	void
 	 */
-	protected function parseArguments(array $arguments)
+	protected function parseArguments($name, array $arguments)
 	{
 		// Get options from config.
-		$itemsDevider = Config::get('c::constructor.items_devider');
-		$parametersDevider = Config::get('c::constructor.parameters_devider');
-		$parametersPrefix = Config::get('c::constructor.parameters_prefix');
-		$parametersPostfix = Config::get('c::constructor.parameters_postfix');
+		$itemsDevider = Config::get('cook::constructor.items_devider');
+		$parametersDevider = Config::get('cook::constructor.parameters_devider');
+		$parametersPrefix = Config::get('cook::constructor.parameters_prefix');
+		$parametersPostfix = Config::get('cook::constructor.parameters_postfix');
+
+		$this->name = Str::lower($name);
 
 		foreach ($arguments as $argumentKey => $argument)
 		{
@@ -58,8 +63,6 @@ class Constructor {
 				);
 			}
 		}
-
-		return $this->arguments;
 	}
 
 	/**
@@ -150,6 +153,22 @@ class Constructor {
 	}
 
 	/**
+	 * Check arguments.
+	 *
+	 * @param 	array 	$arguments
+	 * @return 	array
+	 */
+	public static function getArguments(array $arguments)
+	{
+		if ($arguments)
+		{
+			return $arguments[0];
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get substring between devider simbols.
 	 *
 	 * @param 	string 	$string
@@ -160,8 +179,8 @@ class Constructor {
 	public static function takeBetween($string, $from = false, $to = false)
 	{
 		// Get options from config.
-		$from = ($from) ?: Config::get('c::default.parameters_prefix');
-		$to = ($to) ?: Config::get('c::default.parameters_postfix');
+		$from = ($from) ?: Config::get('cook::default.parameters_prefix');
+		$to = ($to) ?: Config::get('cook::default.parameters_postfix');
 
 		$start = strpos($string, $from);
 		$end = strpos($string, $to);
@@ -189,7 +208,7 @@ class Constructor {
 	public static function takeBefore($string, $before = false)
 	{
 		// Get options from config.
-		$before = ($before) ?: Config::get('c::default.parameters_prefix');
+		$before = ($before) ?: Config::get('cook::default.parameters_prefix');
 
 		$to = strpos($string, $before);
 
@@ -211,7 +230,7 @@ class Constructor {
 	public static function takeAfter($string, $after = false)
 	{
 		// Get options from config.
-		$after = ($after) ?: Config::get('c::default.parameters_postfix');
+		$after = ($after) ?: Config::get('cook::default.parameters_postfix');
 
 		$from = strrpos($string, $after);
 
@@ -224,7 +243,7 @@ class Constructor {
 	}
 
 	/**
-	 * Determine is a substring is set in string
+	 * Determine is a substring is set.
 	 *
 	 * @param 	string 	$haystack
 	 * @param 	string 	$needle
