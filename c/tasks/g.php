@@ -15,9 +15,9 @@ class C_G_Task {
 
 	public function __call($template, $arguments)
 	{
-		if ($this->issetTemplate($template))
+		if ($this->getTemplate($template))
 		{
-			if ($arguments = $this->issetArguments($arguments))
+			if ($arguments = $this->getArguments($arguments))
 			{
 				$constructor = new Constructor($arguments);
 
@@ -38,19 +38,19 @@ class C_G_Task {
 		}
 	}
 
-	protected function issetTemplate($template, $templatesPath = null)
+	protected function getTemplate($template, $templatesPath = null)
 	{
 		$templatesPath = ($templatesPath) ?: Config::get('c::default.templates_path');
 
 		if (File::exists($templatesPath.$template))
 		{
-			return true;
+			return $templatesPath.$template;
 		}
 
 		return false;
 	}
 
-	protected function issetArguments(array $arguments)
+	protected function getArguments(array $arguments)
 	{
 		if ($arguments)
 		{
