@@ -29,10 +29,10 @@ class Generator {
 
 	protected function getTokens($template, $firstCall = false)
 	{
-		$templatesPath = Config::get('c::default.templates_path');
-		$templatesExtention = Config::get('c::default.templates_extension');
-		$tokenPrefix = Config::get('c::default.token_prefix');
-		$tokenPostfix = Config::get('c::default.token_postfix');
+		$templatesPath = Config::get('c::generator.templates_path');
+		$templatesExtention = Config::get('c::generator.templates_extension');
+		$tokenPrefix = Config::get('c::generator.token_prefix');
+		$tokenPostfix = Config::get('c::generator.token_postfix');
 
 		if ($firstCall)
 		{

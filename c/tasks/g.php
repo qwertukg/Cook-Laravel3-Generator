@@ -21,7 +21,7 @@ class C_G_Task {
 			{
 				$constructor = new Constructor($arguments);
 
-				dd($constructor);
+				pp($constructor->arg(1)->item(0)->param(1)->get());
 				
 				$generator = new Generator($template, $constructor);
 
@@ -40,7 +40,7 @@ class C_G_Task {
 
 	protected function getTemplate($template, $templatesPath = null)
 	{
-		$templatesPath = ($templatesPath) ?: Config::get('c::default.templates_path');
+		$templatesPath = ($templatesPath) ?: Config::get('c::generator.templates_path');
 
 		if (File::exists($templatesPath.$template))
 		{
