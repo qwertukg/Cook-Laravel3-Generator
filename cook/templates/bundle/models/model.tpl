@@ -2,6 +2,6 @@
 
 class {{ModelName}} extends Eloquent {
 
-	
+					{{SomeWithTabs}}
 	
 }
