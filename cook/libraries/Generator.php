@@ -33,12 +33,15 @@ class Generator {
 
 		if (File::extension($path) == $templatesExtention)
 		{
-			foreach (explode(PHP_EOL, File::get($path)) as $string) 
+			foreach (explode(PHP_EOL, File::get($path)) as $key => $string) 
 			{
 				if ($token = Constructor::takeBetween($string, $tokenPrefix, $tokenPostfix))
 				{
 					$this->files[$this->counter]['path'] = $path;
-					$this->files[$this->counter]['tokens'][] = $token;
+					$this->files[$this->counter]['items'][] = array(
+						'token' => $token, 
+						'partial' => null,
+					);
 				}
 			}
 			
@@ -47,7 +50,7 @@ class Generator {
 	}
 
 	// all callbacks must have file path as firs parameter
-	protected function iterator($path, $object, $callback, array $parameters = null)
+	protected function iterator($path, $object, $callbackString, array $parameters = null)
 	{
 		$items = new FilesystemIterator($path);
 
@@ -55,7 +58,7 @@ class Generator {
 		{
 			if ($item->isDir())
 			{
-				$this->iterator($itemPath, $object, $callback, $parameters);
+				$this->iterator($itemPath, $object, $callbackString, $parameters);
 			}
 			else
 			{
@@ -68,7 +71,7 @@ class Generator {
 					$parameters = array($itemPath);
 				}
 
-				call_user_func_array(array($object, $callback), $parameters);
+				call_user_func_array(array($object, $callbackString), $parameters);
 			}
 		}
 	}
