@@ -1,33 +1,33 @@
 <?php
 
-use cook\libraries\Constructor;
-use cook\libraries\Generator;
-use cook\libraries\Helpers;
+use cook\libraries\Constructor as C;
+use cook\libraries\Generator as G;
+use cook\libraries\Helpers as H;
 
 class Cook_Bundle_Task {
 
 	public function run($arguments)
 	{
-		return Helpers::show('Here comes cook help');
+		return H::show('Here comes cook help');
 	}
 
 	public function __call($name, $arguments)
 	{
-		if ($template = Generator::getTemplate($this->getTask()))
+		if ($template = G::getTemplate($this->getTask()))
 		{
-			if ($arguments = Constructor::getArguments($arguments))
+			if ($arguments = C::getArguments($arguments))
 			{
-				$constructor = new Constructor($name, $arguments);
+				$constructor = new C($name, $arguments);
 
-				$generator = new Generator($template, $constructor);
+				$generator = new G($template, $constructor);
 
 				return $generator->run();
 			}
 
-			return Helpers::show('Provide some arguments');
+			return H::show('Provide some arguments');
 		}
 		
-		return Helpers::show('Template is not exist');
+		return H::show('Template is not exist');
 	}
 
 	protected function getTask()

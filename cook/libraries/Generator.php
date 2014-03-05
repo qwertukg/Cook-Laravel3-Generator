@@ -1,30 +1,78 @@
 <?php namespace cook\libraries;
 
-use cook\libraries\Constructor; // If remove this, cook\libraries\Constructor may be call like Constructor. WTF?
-use cook\libraries\Helpers;
+use cook\libraries\Constructor as C;
+use cook\libraries\Helpers as H;
 use FilesystemIterator;
 use Laravel\Config;
 use Laravel\File;
+use Laravel\Bundle;
 
-class Generator {
+class Generator extends C {
 
 	public $template;
 	public $files = array();
+	public $arguments;
 
-	protected $arguments;
 	protected $counter = 0;
 
 	public function __construct($template, $arguments)
 	{
 		$this->template = $template;
 		$this->arguments = $arguments;
+
 	}
 
 	public function run()
 	{
 		$this->recursiveFileCallbackIterator($this->template, $this, 'getFiles');
 
-		Helpers::pp($this);
+		// H::dd($this->fillToken('D:\www\kazpost.ibecsystems.kz\bundles\cook\temp\Articles\config\default.tpl', 'FormNamespaces', '\cook\templates\bundle\config\FormNamespaces')); 
+		// H::pp($this->toTemp());
+		H::pp($this);
+		
+		// H::dd($this->Constructor);
+	}
+
+	protected function toTemp()
+	{
+		$destination = path('bundle').'cook'.DS.'temp'.DS.C::bundleName($this->arguments->name);
+
+		return File::cpdir($this->template, $destination);
+	}
+
+	protected function removeTemp()
+	{
+		$directory = path('bundle').'cook'.DS.'temp'.DS.C::bundleName($this->arguments->name);
+
+		File::rmdir($directory);
+
+		if (!File::exists($directory))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	protected function fillToken($path, $token, $partialClass)
+	{
+		$tokenPrefix = Config::get('cook::generator.token_prefix');
+		$tokenPostfix = Config::get('cook::generator.token_postfix');
+
+		if ($template = File::get($path))
+		{
+			$partial = new $partialClass($this->arguments);
+
+			H::pp($partial);
+
+			$token = $tokenPrefix.$token.$tokenPostfix;
+
+			$template = str_replace($token, $partial->fill(), $template);
+
+			return $template;
+		}
+
+		return false;
 	}
 
 	protected function getFiles($path)
@@ -37,18 +85,25 @@ class Generator {
 		{
 			foreach (explode(PHP_EOL, File::get($path)) as $key => $string) 
 			{
-				if ($tokens = Constructor::takeBetween($string, $tokenPrefix, $tokenPostfix, true)) // TODO: Many tokens in one line.
+				// May be more then one token per line, or nothing.
+				if ($tokens = C::takeBetween($string, $tokenPrefix, $tokenPostfix, true))
 				{
 					foreach ($tokens as $token) 
 					{
-						$this->files[$this->counter]['path'] = $path;
-						$this->files[$this->counter]['name'] = static::getFileName($path);
-						$this->files[$this->counter]['rename'] = false;
-						$this->files[$this->counter]['items'][] = array(
-							'token' => $token, 
-							'partial' => null,
-							'position' => static::countTabsBefore($string),
-						);
+						// Check is exists the partial file.
+						if ($partial = static::getPartial($path, $token))
+						{
+							$this->files[$this->counter]['path'] = $path;
+							$this->files[$this->counter]['name'] = static::getFileName($path);
+							$this->files[$this->counter]['rename'] = static::getRenameClass($path);
+							$this->files[$this->counter]['items'][] = array(
+								'partial' => $partial,
+								'partialClass' => static::getClass($partial),
+								'token' => $token, 
+								'position' => static::countTabsBefore($string),
+								'result' => null,
+							);
+						}
 					}
 				}
 			}
@@ -100,7 +155,7 @@ class Generator {
 	{
 		$before = ($before) ?: Config::get('cook::generator.token_prefix');
 
-		if (($stringBefore = Constructor::takeBefore($string, $before)) !== false)
+		if (($stringBefore = C::takeBefore($string, $before)) !== false)
 		{
 			return mb_substr_count($stringBefore, $tabSymbol);
 		}
@@ -108,11 +163,53 @@ class Generator {
 		return false;
 	}
 
-	public static function getFileName($path)
+	public static function getFileName($path, $ext = false)
 	{
-		if ($fileName = Constructor::takeAfter($path, DS))
+		if ($fileName = C::takeAfter($path, DS))
 		{
-			return Constructor::takeBefore($fileName, '.');
+			return ($ext) ? $fileName : C::takeBefore($fileName, '.');
+		}
+
+		return false;
+	}
+
+	public static function getPartial($templatePath, $token)
+	{
+		if ($templateName = C::takeAfter($templatePath, DS))
+		{
+			$partialPath = str_replace($templateName, $token, $templatePath).EXT;
+
+			if (File::exists($partialPath))
+			{
+				return $partialPath;
+			}
+
+			return false;
+		}
+		
+		return false;
+	}
+
+	public static function getClass($partialPath)
+	{
+		$afterBundlePath = DS.'cook'.DS.C::takeAfter($partialPath, Bundle::path('cook'));
+
+		$withoutExtPath = C::takeBefore($afterBundlePath, EXT);
+
+		return str_replace(DS, '\\', $withoutExtPath);
+	}
+
+	public function getRenameClass($templatePath, $renamePostfix = null)
+	{
+		$renamePostfix = ($renamePostfix) ?: Config::get('cook::generator.rename_postfix');
+
+		$withoutNamePath = C::takeBefore($templatePath, static::getFileName($templatePath, true));
+
+		$name = static::getFileName($templatePath);
+
+		if (File::exists($withoutNamePath.$name.$renamePostfix.EXT))
+		{
+			return static::getClass($withoutNamePath.$name.$renamePostfix.EXT);
 		}
 
 		return false;

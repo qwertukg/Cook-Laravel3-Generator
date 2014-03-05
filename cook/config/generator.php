@@ -8,4 +8,6 @@ return array(
 	'token_prefix' => '{{',
 	'token_postfix' => '}}',
 
+	'rename_postfix' => '_rename',
+
 );

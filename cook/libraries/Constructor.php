@@ -249,7 +249,7 @@ class Constructor {
 
 		if ($from !== false)
 		{
-			return substr($string, $from + 1);
+			return substr($string, $from + strlen($after));
 		}
 
 		return false;
@@ -270,6 +270,11 @@ class Constructor {
 		}
 
 		return false;
+	}
+
+	public static function bundleName($string)
+	{
+		return Str::title(Str::plural($string));
 	}
 	
 }
