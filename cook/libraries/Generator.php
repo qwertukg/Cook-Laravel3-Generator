@@ -22,12 +22,12 @@ class Generator {
 
 	public function run()
 	{
-		$this->recursiveFileCallbackIterator($this->template, $this, 'getTokens');
+		$this->recursiveFileCallbackIterator($this->template, $this, 'getFiles');
 
-		Helpers::dd($this->files);
+		Helpers::pp($this);
 	}
 
-	protected function getTokens($path)
+	protected function getFiles($path)
 	{
 		$templatesExtention = Config::get('cook::generator.templates_extension');
 		$tokenPrefix = Config::get('cook::generator.token_prefix');
@@ -37,14 +37,19 @@ class Generator {
 		{
 			foreach (explode(PHP_EOL, File::get($path)) as $key => $string) 
 			{
-				if ($token = Constructor::takeBetween($string, $tokenPrefix, $tokenPostfix))
+				if ($tokens = Constructor::takeBetween($string, $tokenPrefix, $tokenPostfix, true)) // TODO: Many tokens in one line.
 				{
-					$this->files[$this->counter]['path'] = $path;
-					$this->files[$this->counter]['items'][] = array(
-						'token' => $token, 
-						'partial' => null,
-						'position' => static::countTabsBefore($string),
-					);
+					foreach ($tokens as $token) 
+					{
+						$this->files[$this->counter]['path'] = $path;
+						$this->files[$this->counter]['name'] = static::getFileName($path);
+						$this->files[$this->counter]['rename'] = false;
+						$this->files[$this->counter]['items'][] = array(
+							'token' => $token, 
+							'partial' => null,
+							'position' => static::countTabsBefore($string),
+						);
+					}
 				}
 			}
 			
@@ -95,9 +100,19 @@ class Generator {
 	{
 		$before = ($before) ?: Config::get('cook::generator.token_prefix');
 
-		if ($stringBefore = Constructor::takeBefore($string, $before))
+		if (($stringBefore = Constructor::takeBefore($string, $before)) !== false)
 		{
 			return mb_substr_count($stringBefore, $tabSymbol);
+		}
+
+		return false;
+	}
+
+	public static function getFileName($path)
+	{
+		if ($fileName = Constructor::takeAfter($path, DS))
+		{
+			return Constructor::takeBefore($fileName, '.');
 		}
 
 		return false;
