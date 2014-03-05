@@ -172,28 +172,43 @@ class Constructor {
 	 * @param 	string 	$string
 	 * @param 	string 	$from
 	 * @param 	string 	$to
-	 * @return 	string
+	 * @param 	bool 	$multi 	Set this as true if $string may have more then one token.
+	 * @return 	string|array
 	 */
-	public static function takeBetween($string, $from = null, $to = null)
+	public static function takeBetween($string, $from = null, $to = null, $multi = false)
 	{
 		// Get options from config.
 		$from = ($from) ?: Config::get('cook::constructor.parameters_prefix');
 		$to = ($to) ?: Config::get('cook::constructor.parameters_postfix');
 
-		$start = strpos($string, $from);
-		$end = strpos($string, $to);
+		$result = array();
 
-		if ($start !== false and $end !== false)
+		foreach (explode($to, $string) as $subString)
 		{
-			$length = $end - $start;
-			$value = substr($string, $start, $length);
-			$value = str_replace($from, '', $value);
-			$value = str_replace($to, '', $value);
+			$subString .= $to;
 
-			return $value;
+			$start = strpos($subString, $from);
+			$end = strpos($subString, $to);
+
+			if ($start !== false and $end !== false)
+			{
+				$length = $end - $start;
+				$value = substr($subString, $start, $length);
+				$value = str_replace($from, '', $value);
+				$value = str_replace($to, '', $value);
+
+				$result[] = $value;
+
+				// If false, return value as string.
+				if (!$multi)
+				{
+					return $value;
+				}
+			}
+
 		}
 
-		return false;
+		return ($result) ? $result : false;
 	}
 
 	/**
