@@ -2,9 +2,14 @@
 
 class Helpers {
 
-	public static function show($string)
+	public static function show($string, $exit = false)
 	{
 		echo PHP_EOL.$string.PHP_EOL;
+
+		if ($exit)
+		{
+			exit();
+		}
 	}
 
 	public static function pp($var, $exit = true)
