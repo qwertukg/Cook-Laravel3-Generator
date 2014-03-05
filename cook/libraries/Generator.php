@@ -24,7 +24,7 @@ class Generator {
 	{
 		$this->recursiveFileCallbackIterator($this->template, $this, 'getTokens');
 
-		Helpers::pp($this);
+		Helpers::dd($this->files);
 	}
 
 	protected function getTokens($path)
@@ -43,6 +43,7 @@ class Generator {
 					$this->files[$this->counter]['items'][] = array(
 						'token' => $token, 
 						'partial' => null,
+						'position' => static::countTabsBefore($string),
 					);
 				}
 			}
@@ -85,6 +86,18 @@ class Generator {
 		if (File::exists($templatesPath.$template))
 		{
 			return $templatesPath.$template;
+		}
+
+		return false;
+	}
+
+	public static function countTabsBefore($string, $before = null, $tabSymbol = "\t")
+	{
+		$before = ($before) ?: Config::get('cook::generator.token_prefix');
+
+		if ($stringBefore = Constructor::takeBefore($string, $before))
+		{
+			return mb_substr_count($stringBefore, $tabSymbol);
 		}
 
 		return false;

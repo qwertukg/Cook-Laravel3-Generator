@@ -43,14 +43,12 @@ class Constructor {
 		// Get options from config.
 		$itemsDevider = Config::get('cook::constructor.items_devider');
 		$parametersDevider = Config::get('cook::constructor.parameters_devider');
-		$parametersPrefix = Config::get('cook::constructor.parameters_prefix');
-		$parametersPostfix = Config::get('cook::constructor.parameters_postfix');
 
 		foreach ($arguments as $argumentKey => $argument)
 		{
 			foreach (explode($itemsDevider, $argument) as $itemKey => $item)
 			{
-				if ($parameters = static::takeBetween($item, $parametersPrefix, $parametersPostfix))
+				if ($parameters = static::takeBetween($item))
 				{
 					$item = static::takeBefore($item);
 					$parameters = explode($parametersDevider, $parameters);
@@ -176,7 +174,7 @@ class Constructor {
 	 * @param 	string 	$to
 	 * @return 	string
 	 */
-	public static function takeBetween($string, $from = false, $to = false)
+	public static function takeBetween($string, $from = null, $to = null)
 	{
 		// Get options from config.
 		$from = ($from) ?: Config::get('cook::constructor.parameters_prefix');
@@ -205,7 +203,7 @@ class Constructor {
 	 * @param 	string 	$before
 	 * @return 	string
 	 */
-	public static function takeBefore($string, $before = false)
+	public static function takeBefore($string, $before = null)
 	{
 		// Get options from config.
 		$before = ($before) ?: Config::get('cook::constructor.parameters_prefix');
@@ -227,7 +225,7 @@ class Constructor {
 	 * @param 	string 	$after
 	 * @return 	string
 	 */
-	public static function takeAfter($string, $after = false)
+	public static function takeAfter($string, $after = null)
 	{
 		// Get options from config.
 		$after = ($after) ?: Config::get('cook::constructor.parameters_postfix');
