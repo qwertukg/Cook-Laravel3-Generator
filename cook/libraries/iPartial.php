@@ -1,6 +1,6 @@
 <?php namespace cook\libraries;
 
-interface iGenerator {
+interface iPartial {
 
 	public function fill();
 

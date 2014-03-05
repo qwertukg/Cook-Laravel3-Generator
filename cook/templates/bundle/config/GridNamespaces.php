@@ -1,6 +1,10 @@
-<?php namespace Generator;
+<?php namespace cook\templates\bundle\config;
 
-class GridNamespaces extends Generator implements iGenerator {
+use cook\libraries\Generator;
+use cook\libraries\iPartial;
+use cook\libraries\Helpers;
+
+class GridNamespaces extends Generator implements iPartial {
 
 	public function fill()
 	{

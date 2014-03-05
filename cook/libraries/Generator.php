@@ -1,8 +1,10 @@
 <?php namespace cook\libraries;
 
-use Laravel\File;
-use Laravel\Config;
+use cook\libraries\Constructor; // If remove this, cook\libraries\Constructor may be call like Constructor. WTF?
+use cook\libraries\Helpers;
 use FilesystemIterator;
+use Laravel\Config;
+use Laravel\File;
 
 class Generator {
 
@@ -20,9 +22,9 @@ class Generator {
 
 	public function run()
 	{
-		$this->iterator($this->template, $this, 'getTokens');
+		$this->recursiveFileCallbackIterator($this->template, $this, 'getTokens');
 
-		print_r($this);
+		Helpers::pp($this);
 	}
 
 	protected function getTokens($path)
@@ -50,7 +52,7 @@ class Generator {
 	}
 
 	// all callbacks must have file path as firs parameter
-	protected function iterator($path, $object, $callbackString, array $parameters = null)
+	protected function recursiveFileCallbackIterator($path, $object, $callbackString, array $parameters = null)
 	{
 		$items = new FilesystemIterator($path);
 
@@ -58,7 +60,7 @@ class Generator {
 		{
 			if ($item->isDir())
 			{
-				$this->iterator($itemPath, $object, $callbackString, $parameters);
+				$this->recursiveFileCallbackIterator($itemPath, $object, $callbackString, $parameters);
 			}
 			else
 			{

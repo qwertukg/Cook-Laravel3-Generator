@@ -153,7 +153,7 @@ class Constructor {
 	}
 
 	/**
-	 * Check arguments.
+	 * Check arguments from CLI.
 	 *
 	 * @param 	array 	$arguments
 	 * @return 	array
@@ -169,7 +169,7 @@ class Constructor {
 	}
 
 	/**
-	 * Get substring between devider simbols.
+	 * Get substring between devider symbols.
 	 *
 	 * @param 	string 	$string
 	 * @param 	string 	$from
@@ -199,7 +199,7 @@ class Constructor {
 	}
 
 	/**
-	 * Get substring before devider simbol.
+	 * Get substring before devider symbol.
 	 *
 	 * @param 	string 	$string
 	 * @param 	string 	$before
@@ -221,7 +221,7 @@ class Constructor {
 	}
 
 	/**
-	 * Get substring after devider simbol.
+	 * Get substring after devider symbol.
 	 *
 	 * @param 	string 	$string
 	 * @param 	string 	$after
