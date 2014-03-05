@@ -6,7 +6,7 @@ use Laravel\Str;
 class Constructor {
 
 	/**
-	 * Determine name and arguments storage.
+	 * Determine storage for name and arguments.
 	 *
 	 */
 	public $name;
@@ -21,11 +21,13 @@ class Constructor {
 	protected $parameterKey;
 
 	/**
-	 * Prepare arguments for future work
+	 * Set dish name and prepare arguments for future work
 	 *
 	 */
 	public function __construct($name, array $arguments)
 	{
+		$this->name = Str::lower($name);
+
 		$this->parseArguments($name, $arguments);
 	}
 
@@ -43,8 +45,6 @@ class Constructor {
 		$parametersDevider = Config::get('cook::constructor.parameters_devider');
 		$parametersPrefix = Config::get('cook::constructor.parameters_prefix');
 		$parametersPostfix = Config::get('cook::constructor.parameters_postfix');
-
-		$this->name = Str::lower($name);
 
 		foreach ($arguments as $argumentKey => $argument)
 		{
@@ -179,8 +179,8 @@ class Constructor {
 	public static function takeBetween($string, $from = false, $to = false)
 	{
 		// Get options from config.
-		$from = ($from) ?: Config::get('cook::default.parameters_prefix');
-		$to = ($to) ?: Config::get('cook::default.parameters_postfix');
+		$from = ($from) ?: Config::get('cook::constructor.parameters_prefix');
+		$to = ($to) ?: Config::get('cook::constructor.parameters_postfix');
 
 		$start = strpos($string, $from);
 		$end = strpos($string, $to);
@@ -208,7 +208,7 @@ class Constructor {
 	public static function takeBefore($string, $before = false)
 	{
 		// Get options from config.
-		$before = ($before) ?: Config::get('cook::default.parameters_prefix');
+		$before = ($before) ?: Config::get('cook::constructor.parameters_prefix');
 
 		$to = strpos($string, $before);
 
@@ -230,7 +230,7 @@ class Constructor {
 	public static function takeAfter($string, $after = false)
 	{
 		// Get options from config.
-		$after = ($after) ?: Config::get('cook::default.parameters_postfix');
+		$after = ($after) ?: Config::get('cook::constructor.parameters_postfix');
 
 		$from = strrpos($string, $after);
 

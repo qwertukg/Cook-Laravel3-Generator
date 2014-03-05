@@ -13,15 +13,11 @@ class Cook_Bundle_Task {
 
 	public function __call($name, $arguments)
 	{
-		$template = $this->getTask();
-
-		if ($template = Generator::getTemplate($template))
+		if ($template = Generator::getTemplate($this->getTask()))
 		{
 			if ($arguments = Constructor::getArguments($arguments))
 			{
 				$constructor = new Constructor($name, $arguments);
-
-				pp($constructor);
 
 				$generator = new Generator($template, $constructor);
 

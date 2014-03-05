@@ -7,67 +7,71 @@ use FilesystemIterator;
 class Generator {
 
 	public $template;
-	public $arguments;
-	public $tokens = array();
+	public $files = array();
 
-	private $counter = 0;
+	protected $arguments;
+	protected $counter = 0;
 
 	public function __construct($template, $arguments)
 	{
-		$constructor = new Constructor;
-
 		$this->template = $template;
-		$this->arguments = $constructor->parseArguments($arguments);
+		$this->arguments = $arguments;
 	}
 
 	public function run()
 	{
-		$this->getTokens($this->template, true);
+		$this->iterator($this->template, $this, 'getTokens');
 
 		print_r($this);
 	}
 
-	protected function getTokens($template, $firstCall = false)
+	protected function getTokens($path)
 	{
-		$templatesPath = Config::get('cook::generator.templates_path');
 		$templatesExtention = Config::get('cook::generator.templates_extension');
 		$tokenPrefix = Config::get('cook::generator.token_prefix');
 		$tokenPostfix = Config::get('cook::generator.token_postfix');
 
-		if ($firstCall)
+		if (File::extension($path) == $templatesExtention)
 		{
-			$template = $templatesPath.$template;
+			foreach (explode(PHP_EOL, File::get($path)) as $string) 
+			{
+				if ($token = Constructor::takeBetween($string, $tokenPrefix, $tokenPostfix))
+				{
+					$this->files[$this->counter]['path'] = $path;
+					$this->files[$this->counter]['tokens'][] = $token;
+				}
+			}
+			
+			$this->counter++;
 		}
-		
-		$items = new FilesystemIterator($template);
+	}
 
-		foreach ($items as $path => $item)
+	// all callbacks must have file path as firs parameter
+	protected function iterator($path, $object, $callback, array $parameters = null)
+	{
+		$items = new FilesystemIterator($path);
+
+		foreach ($items as $itemPath => $item)
 		{
 			if ($item->isDir())
 			{
-				$this->getTokens($path);
+				$this->iterator($itemPath, $object, $callback, $parameters);
 			}
-			elseif (File::extension($path) == $templatesExtention)
+			else
 			{
-				$file = File::get($path);
-
-				foreach (explode(PHP_EOL, $file) as $string) 
+				if ($parameters)
 				{
-					if ($token = Constructor::takeBetween($string, $tokenPrefix, $tokenPostfix))
-					{
-						$this->tokens[$this->counter]['path'] = $path;
-						$this->tokens[$this->counter]['partials'][] = $token;
-					}
+					array_unshift($parameters, $itemPath);
 				}
-				
-				$this->counter++;
+				else
+				{
+					$parameters = array($itemPath);
+				}
+
+				call_user_func_array(array($object, $callback), $parameters);
 			}
 		}
-
-		return $this->tokens;
 	}
-
-	
 
 	public static function getTemplate($template, $templatesPath = null)
 	{
