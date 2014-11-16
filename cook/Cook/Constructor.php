@@ -7,7 +7,6 @@ use Laravel\IoC;
 use Laravel\Fluent;
 
 use ReflectionClass;
-use Exception;
 
 class Constructor extends Fluent {
 
@@ -123,7 +122,7 @@ class Constructor extends Fluent {
 		{
 			if (!isset($template->replacers[$i]))
 			{
-				throw new Exception("Token '$token' not found for template '$template->name' in '$template->root'.");
+				throw new CException("Token '$token' not found for template '$template->name' in '$template->root'.");
 			}
 		}
 

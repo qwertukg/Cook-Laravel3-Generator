@@ -1,7 +1,6 @@
 <?php namespace Cook\Laravel;
 
 use Cook\Generator;
-use Exception;
 use Laravel\Database\Schema as LaravelSchema;
 use Laravel\IoC;
 
@@ -19,7 +18,7 @@ class Schema extends LaravelSchema {
 				
 			$generator->run();
 		} 
-		catch (Exception $e)
+		catch (CException $e)
 		{
 			if ($e->getCode() !== 500)
 			{

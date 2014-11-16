@@ -1,7 +1,6 @@
 <?php namespace Cook;
 
 use Laravel\File;
-use Exception;
 use Symfony\Component\Console\Input\ArgvInput;
 use Laravel\Bundle;
 use RecursiveDirectoryIterator;
@@ -54,19 +53,19 @@ class Template {
 
 		if ($name === false)
 		{
-			throw new Exception("continue", 500);
+			throw new CException("continue", 500);
 		}
 
 		if ($name === null)
 		{
-			throw new Exception("Set template name.");
+			throw new CException("Set template name.");
 		}
 
 		$this->root = Bundle::path('cook').'Templates'.DS.$name;
 
 		if (!is_dir($this->root))
 		{
-			throw new Exception("Template $template not found.");
+			throw new CException("Template '$name' not found.");
 		}
 	}
 

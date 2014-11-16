@@ -1,7 +1,6 @@
 <?php namespace Cook;
 
 use ReflectionClass;
-use Exception;
 
 class Replacer {
 
@@ -30,7 +29,6 @@ class Replacer {
 		}
 		else
 		{
-			throw new Exception("Can't find replacer '$methodName' in '$className'");
 		}
 	}
 
