@@ -1,5 +1,6 @@
 <?php namespace Cook;
 
+use Laravel\Str;
 use Laravel\File;
 use Symfony\Component\Console\Input\ArgvInput;
 use Laravel\Bundle;
@@ -102,9 +103,9 @@ class Template {
 			{
 				require_once $replacerPath;
 
-				$replacer = $template->name.'_Replacer';
+				$replacerObject = Str::title($template->name).'_Replacer';
 
-				$template->replacerObject = new $replacer;
+				$template->replacerObject = new $replacerObject;
 			}
 		}
 	}

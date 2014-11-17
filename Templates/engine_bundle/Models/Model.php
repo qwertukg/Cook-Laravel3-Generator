@@ -21,7 +21,7 @@ class Model_Replacer {
 	{
 		foreach ($c->columns() as $column) 
 		{
-			$c->result->addLn("'$column->name' => 'required',");
+			$c->result->addLn("'$column->name' => '$column->rule',");
 		}
 
 		return $c->result->get();

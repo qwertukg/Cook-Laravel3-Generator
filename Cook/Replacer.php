@@ -1,12 +1,13 @@
 <?php namespace Cook;
 
 use ReflectionClass;
+use Laravel\Str;
 
 class Replacer {
 
-	public static function rename($class, Constructor $constructor)
+	public static function renameFile($replacerClassName, Constructor $constructor)
 	{
-		$className = $class.'_Replacer';
+		$className = Str::title($replacerClassName) . '_Replacer';
 
 		$reflection = new ReflectionClass($className);
 
@@ -16,9 +17,9 @@ class Replacer {
 		}
 	}
 
-	public static function run($class, $method, Constructor $constructor)
+	public static function runCommand($replacerClassName, $method, Constructor $constructor)
 	{
-		$className = $class.'_Replacer';
+		$className = Str::title($replacerClassName) . '_Replacer';
 		$methodName = 'replace_'.$method;
 
 		$reflection = new ReflectionClass($className);
@@ -26,9 +27,6 @@ class Replacer {
 		if ($reflection->hasMethod($methodName))
 		{
 			return call_user_func(array($className, $methodName), $constructor);
-		}
-		else
-		{
 		}
 	}
 

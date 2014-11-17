@@ -66,10 +66,9 @@ class Generator {
 
 			if (!File::exists($path))
 			{
-				if (File::put($path, $template->result))
-				{
-					echo 'Cook: ' . $this->normalizePath($this->constructor->bundleName . DS . $template->path . DS . $name . EXT) . ' created!' . PHP_EOL;
-				}
+				File::put($path, $template->result);
+				
+				echo 'Cook: ' . $this->normalizePath($this->constructor->bundleName . DS . $template->path . DS . $name . EXT) . ' created!' . PHP_EOL;
 			}
 		}
 	}
@@ -82,24 +81,18 @@ class Generator {
 
 			$path = $this->root . DS . $template->path . DS . $name . EXT;
 
-			/*if ($template->path and is_dir($this->root . DS . $template->path))
+			if ($template->path and is_dir($this->root . DS . $template->path))
 			{
-				$r = File::rmdir($this->root . DS . $template->path);
-					echo 'Cook: ' . $this->normalizePath($this->constructor->bundleName . DS . $template->path . DS . $name . EXT) . ' deleted!'.var_dump($r) . PHP_EOL;
-			}*/
+				File::rmdir($this->root . DS . $template->path);
+
+				echo 'Cook: ' . $this->normalizePath($this->constructor->bundleName . DS . $template->path . DS . $name . EXT) . ' deleted!' . PHP_EOL;
+			}
 
 			if (File::exists($path))
 			{
-				if (File::delete($path))
-				{
-					echo 'Cook: ' . $this->normalizePath($this->constructor->bundleName . DS . $template->path . DS . $name . EXT) . ' deleted!' . PHP_EOL;
-				}
+				File::delete($path);
 
-				/*if ($template->path and is_dir($this->root . DS . $template->path))
-				{
-					$r = File::rmdir($this->root . DS . $template->path);
-						echo 'Cook: ' . $this->normalizePath($this->constructor->bundleName . DS . $template->path . DS . $name . EXT) . ' deleted!'.var_dump($r) . PHP_EOL;
-				}*/
+				echo 'Cook: ' . $this->normalizePath($this->constructor->bundleName . DS . $template->path . DS . $name . EXT) . ' deleted!' . PHP_EOL;
 			}
 		}
 	}
@@ -123,9 +116,8 @@ class Generator {
 
 	protected function normalizePath($path)
 	{
-		$path =  preg_replace('#\\\+#', '\\', $path);
-		$path =  preg_replace('#/+#', '/', $path);
-		// pp( $path ); 
+		$path =  preg_replace('#[/\\\\]+#', DS, $path);
+
 		return $path;
 	}
 
