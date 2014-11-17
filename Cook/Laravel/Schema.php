@@ -1,5 +1,6 @@
 <?php namespace Cook\Laravel;
 
+use Cook\CException;
 use Cook\Generator;
 use Laravel\Database\Schema as LaravelSchema;
 use Laravel\IoC;

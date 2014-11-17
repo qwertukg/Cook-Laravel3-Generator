@@ -1,22 +1,17 @@
 <?php namespace Cook\Laravel;
 
 use Laravel\CLI\Tasks\Migrate\Migrator as LaravelMigrator;
-use Cook\Constructor;
 use Laravel\IoC;
+use Cook\Storage;
 
 class Migrator extends LaravelMigrator {
 
-	public function __construct($resolver, $database)
+	// Create the database file hashes storage table used by Generator.
+	public function install_cook()
 	{
-		parent::__construct($resolver, $database);
-
-		// Register new Constructor
-		IoC::singleton('Constructor', function()
-		{
-			return new Constructor;
-		});
+		Storage::install();
 	}
- 
+
 	/**
 	 * Run the outstanding migrations for a given bundle.
 	 *
@@ -45,7 +40,7 @@ class Migrator extends LaravelMigrator {
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			
 			// Add bundle where migration is declared, to current Constructor 
-			IoC::resolve('Constructor')->setBundle($migration['bundle']);
+			IoC::resolve('Constructor')->setMigration($migration);
 
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -96,8 +91,12 @@ class Migrator extends LaravelMigrator {
 		// migration and run the "down" method.
 		foreach (array_reverse($migrations) as $migration)
 		{
+			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 			// Add bundle where migration is declared, to current Constructor 
-			IoC::resolve('Constructor')->setBundle($migration['bundle']);
+			IoC::resolve('Constructor')->setMigration($migration);
+
+			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 			$migration['migration']->down();
 

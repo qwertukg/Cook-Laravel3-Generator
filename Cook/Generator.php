@@ -22,6 +22,8 @@ class Generator {
 
 	public function setTemplate(Template $template)
 	{
+		$this->storage = new Storage;
+
 		$this->templateRoot = $template->root;
 
 		$this->templates = $template->templates;
@@ -31,6 +33,7 @@ class Generator {
 		$this->root = Bundle::path($template->constructor->bundleName);
 
 		$this->setTemplateResult();
+		$this->setTemplateResultPaths();
 
 		return $this;
 	}
@@ -42,11 +45,23 @@ class Generator {
 		// print_r($this);
 	}
 
-	protected function setTemplateResult() // WTF!
+	protected function setTemplateResult()
 	{
-		foreach ($this->templates as $i => $template) 
+		foreach ($this->templates as $template) 
 		{
 			$template->result = str_replace($template->tokens, $template->replacers, $template->content);
+		}
+	}
+
+	protected function setTemplateResultPaths()
+	{
+		foreach ($this->templates as $template) 
+		{
+			$name = ($template->newName) ? $template->newName : $template->name;
+
+			$template->resultPath = $this->normalizePath($this->root . DS . $template->path);
+			$template->resultPathWithFilename = $this->normalizePath($this->root . DS . $template->path . DS . $name . EXT);
+			$template->resultPathFromBundle = $this->normalizePath($this->constructor->bundleName . DS . $template->path . DS . $name . EXT);
 		}
 	}
 
@@ -54,20 +69,19 @@ class Generator {
 	{
 		foreach ($this->templates as $template) 
 		{
-			$name = ($template->newName) ? $template->newName : $template->name;
-
-			$path = $this->normalizePath($this->root . DS . $template->path . DS . $name . EXT);
-
-			if (!is_dir($this->root . DS . $template->path))
+			if (!is_dir($template->resultPath))
 			{
-				File::mkdir($this->root . DS . $template->path);
+				File::mkdir($template->resultPath);
 			}
 
-			if (!File::exists($path))
+			if (!File::exists($template->resultPathWithFilename))
 			{
-				File::put($path, $template->result);
-				
-				echo 'Cook: ' . $this->normalizePath($this->constructor->bundleName . DS . $template->path . DS . $name . EXT) . ' created!' . PHP_EOL;
+				if ($this->storage->log($this->constructor->migration, $template->resultPathFromBundle, $template->result))
+				{
+					File::put($template->resultPathWithFilename, $template->result);
+
+					echo 'Cook: ' . $template->resultPathFromBundle . ' created!' . PHP_EOL;
+				}
 			}
 		}
 	}
@@ -76,22 +90,14 @@ class Generator {
 	{
 		foreach ($this->templates as $template) 
 		{
-			$name = ($template->newName) ? $template->newName : $template->name;
-
-			$path = $this->normalizePath($this->root . DS . $template->path . DS . $name . EXT);
-
-			if ($template->path and is_dir($this->root . DS . $template->path))
+			if (File::exists($template->resultPathWithFilename))
 			{
-				File::rmdir($this->root . DS . $template->path, true);
+				if ($this->storage->delete($this->constructor->migration, $template->resultPathFromBundle, File::get($template->resultPathWithFilename)))
+				{
+					File::delete($template->resultPathWithFilename);
 
-				echo 'Cook: ' . $this->normalizePath($this->constructor->bundleName . DS . $template->path . DS . $name . EXT) . ' deleted!' . PHP_EOL;
-			}
-
-			if (File::exists($path))
-			{
-				File::delete($path);
-
-				echo 'Cook: ' . $this->normalizePath($this->constructor->bundleName . DS . $template->path . DS . $name . EXT) . ' deleted!' . PHP_EOL;
+					echo 'Cook: ' . $template->resultPathFromBundle . ' deleted!' . PHP_EOL;
+				}
 			}
 		}
 	}

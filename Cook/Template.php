@@ -30,6 +30,10 @@ class Template {
 	public $tabs;
 	public $replacers;
 
+	public $resultPath;
+	public $resultPathFromBundle;
+	public $resultPathWithFilename;
+
 	public function setConstructor(Constructor $constructor)
 	{
 		$this->constructor = $constructor;

@@ -1,22 +1,17 @@
 <?php
-
 Autoloader::namespaces(array(
 	'Cook' => Bundle::path('cook').'Cook',
 ));
-
-
 
 IoC::register('Replacer', function()
 {
 	return new Cook\Replacer;
 });
 
-IoC::register('Constructor', function()
+IoC::singleton('Constructor', function()
 {
 	return new Cook\Constructor;
 });
-
-
 
 IoC::register('Template', function()
 {
@@ -27,8 +22,6 @@ IoC::register('Generator', function()
 {
 	return new Cook\Generator;
 });
-
-
 
 IoC::register('task: migrate', function()
 {
