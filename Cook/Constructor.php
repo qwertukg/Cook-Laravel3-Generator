@@ -106,9 +106,9 @@ class Constructor extends Fluent {
 			{
 				$this->result->tabs = str_repeat("\t", $template->tabs[$i]);
 
-				$template->replacers[$i] = Replacer::runCommand($template->name, $nakedToken, $this);
+				$template->replacers[$i] = Replacer::runCommand($template->replacerObject, $nakedToken, $this);
 
-				$template->newName = (Replacer::renameFile($template->name, $this)); // TODO WTF?
+				$template->newName = Replacer::renameFile($template->replacerObject, $this); // TODO WTF?
 			}
 		}
 
@@ -122,7 +122,7 @@ class Constructor extends Fluent {
 		{
 			if (!isset($template->replacers[$i]))
 			{
-				throw new CException("Token '$token' not found for template '$template->name' in '$template->root'.");
+				throw new CException("Replacer '$token' not found for template '$template->name' in '$template->root'.");
 			}
 		}
 

@@ -1,8 +1,8 @@
-<?php
+<?php namespace Cook\Templates\EngineBundle\Language\Kz;
 
-class Default2_Replacer {
+class DefaultReplacer {
 
-	public function replace_labels($c)
+	public function labels($c)
 	{
 		foreach ($c->columns() as $column) 
 		{

@@ -30,7 +30,7 @@ class Generator {
 
 		$this->root = Bundle::path($template->constructor->bundleName);
 
-		$this->setTemplateResultAndPath();
+		$this->setTemplateResult();
 
 		return $this;
 	}
@@ -42,12 +42,11 @@ class Generator {
 		// print_r($this);
 	}
 
-	protected function setTemplateResultAndPath() // WTF!
+	protected function setTemplateResult() // WTF!
 	{
 		foreach ($this->templates as $i => $template) 
 		{
 			$template->result = str_replace($template->tokens, $template->replacers, $template->content);
-			$template->path = substr(str_replace($this->templateRoot, '', $template->root), 1);
 		}
 	}
 

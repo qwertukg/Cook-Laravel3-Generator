@@ -5,28 +5,19 @@ use Laravel\Str;
 
 class Replacer {
 
-	public static function renameFile($replacerClassName, Constructor $constructor)
+	public static function renameFile($replacerObject, Constructor $constructor)
 	{
-		$className = Str::title($replacerClassName) . '_Replacer';
-
-		$reflection = new ReflectionClass($className);
-
-		if ($reflection->hasMethod('rename'))
+		if (method_exists($replacerObject, 'renameFile')) 
 		{
-			return call_user_func(array($className, 'rename'), $constructor);
+			return $replacerObject->renameFile($constructor);
 		}
 	}
 
-	public static function runCommand($replacerClassName, $method, Constructor $constructor)
+	public static function runCommand($replacerObject, $method, Constructor $constructor)
 	{
-		$className = Str::title($replacerClassName) . '_Replacer';
-		$methodName = 'replace_'.$method;
-
-		$reflection = new ReflectionClass($className);
-
-		if ($reflection->hasMethod($methodName))
+		if (method_exists($replacerObject, $method)) 
 		{
-			return call_user_func(array($className, $methodName), $constructor);
+			return $replacerObject->$method($constructor);
 		}
 	}
 

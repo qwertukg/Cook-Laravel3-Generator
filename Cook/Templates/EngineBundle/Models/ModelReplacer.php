@@ -1,13 +1,13 @@
-<?php
+<?php namespace Cook\Templates\EngineBundle\Models;
 
-class Model_Replacer {
+class ModelReplacer {
 
-	public function rename($c)
+	public function renameFile($c)
 	{
 		return $c->Table;
 	}
 
-	public function replace_accessible($c)
+	public function accessible($c)
 	{
 		foreach ($c->columns() as $column) 
 		{
@@ -17,17 +17,19 @@ class Model_Replacer {
 		return $c->result->get();
 	}
 
-	public function replace_rules($c)
+	public function rules($c)
 	{
 		foreach ($c->columns() as $column) 
 		{
-			$c->result->addLn("'$column->name' => '$column->rule',");
+			$rule = ($column->rule) ? $column->rule : 'required';
+
+			$c->result->addLn("'$column->name' => '$rule',");
 		}
 
 		return $c->result->get();
 	}
 
-	public function replace_relations($c)
+	public function relations($c)
 	{
 		foreach ($c->relations() as $relation) 
 		{

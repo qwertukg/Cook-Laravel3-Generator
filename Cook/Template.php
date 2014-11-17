@@ -19,6 +19,7 @@ class Template {
 	// Templates list
 	public $templates;
 
+	public $templateName;
 	public $name;
 	public $newName;
 	public $replacerObject;
@@ -36,6 +37,8 @@ class Template {
 		$this->checkInput();
 
 		$this->findTemplatesRecursive();
+
+		$this->setTemplatesPaths();
 
 		$this->findReplacerObjects();
 
@@ -62,12 +65,14 @@ class Template {
 			throw new CException("Set template name.");
 		}
 
-		$this->root = Bundle::path('cook').'Templates'.DS.$name;
+		$this->root = Bundle::path('cook') . 'Cook' . DS . 'Templates' . DS . $name;
 
 		if (!is_dir($this->root))
 		{
 			throw new CException("Template '$name' not found.");
 		}
+
+		$this->templateName = $name;
 	}
 
 	protected function findTemplatesRecursive()
@@ -89,7 +94,6 @@ class Template {
 
 				$this->templates[] = $template;
 			}
-
 		}
 	}
 
@@ -97,15 +101,13 @@ class Template {
 	{
 		foreach ($this->templates as $i => $template) 
 		{
-			$replacerPath = $template->root.DS.$template->name.'.php';
+			$replacerPath = $template->root . DS . $template->name . 'Replacer.php';
 			
 			if (File::exists($replacerPath))
 			{
-				require_once $replacerPath;
+				$replacerClass = '\\Cook\\Templates\\' . $this->templateName . '\\' . $template->path . '\\' . Str::title($template->name) . 'Replacer';
 
-				$replacerObject = Str::title($template->name).'_Replacer';
-
-				$template->replacerObject = new $replacerObject;
+				$template->replacerObject = new $replacerClass;
 			}
 		}
 	}
@@ -152,6 +154,14 @@ class Template {
 		foreach ($this->templates as $i => $template) 
 		{
 			$template = $this->constructor->findReplacers($template);
+		}
+	}
+
+	protected function setTemplatesPaths()
+	{
+		foreach ($this->templates as $i => $template) 
+		{
+			$template->path = substr(str_replace($this->root, '', $template->root), 1);
 		}
 	}
 
