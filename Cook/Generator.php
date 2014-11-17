@@ -56,7 +56,7 @@ class Generator {
 		{
 			$name = ($template->newName) ? $template->newName : $template->name;
 
-			$path = $this->root . DS . $template->path . DS . $name . EXT;
+			$path = $this->normalizePath($this->root . DS . $template->path . DS . $name . EXT);
 
 			if (!is_dir($this->root . DS . $template->path))
 			{
@@ -78,11 +78,11 @@ class Generator {
 		{
 			$name = ($template->newName) ? $template->newName : $template->name;
 
-			$path = $this->root . DS . $template->path . DS . $name . EXT;
+			$path = $this->normalizePath($this->root . DS . $template->path . DS . $name . EXT);
 
 			if ($template->path and is_dir($this->root . DS . $template->path))
 			{
-				File::rmdir($this->root . DS . $template->path);
+				File::rmdir($this->root . DS . $template->path, true);
 
 				echo 'Cook: ' . $this->normalizePath($this->constructor->bundleName . DS . $template->path . DS . $name . EXT) . ' deleted!' . PHP_EOL;
 			}
