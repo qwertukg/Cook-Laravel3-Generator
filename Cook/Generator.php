@@ -76,7 +76,7 @@ class Generator {
 
 			if (!File::exists($template->resultPathWithFilename))
 			{
-				if ($this->storage->log($this->constructor->migration, $template->resultPathFromBundle, $template->result))
+				if ($this->storage->log($template->resultPathFromBundle, $template->result))
 				{
 					File::put($template->resultPathWithFilename, $template->result);
 
@@ -92,7 +92,7 @@ class Generator {
 		{
 			if (File::exists($template->resultPathWithFilename))
 			{
-				if ($this->storage->delete($this->constructor->migration, $template->resultPathFromBundle, File::get($template->resultPathWithFilename)))
+				if ($this->storage->delete($template->resultPathFromBundle, File::get($template->resultPathWithFilename)))
 				{
 					File::delete($template->resultPathWithFilename);
 

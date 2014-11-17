@@ -7,19 +7,19 @@ class Storage {
 	protected static $algo = 'md5';
 
 	// Log a file hash in the storage table.
-	public function log($migration, $file, $result)
+	public function log($file, $result)
 	{
 		$hash = hash(static::$algo, $result);
 
-		return  DB::table('cook_storage')->insert(compact('migration', 'file', 'hash'));
+		return  DB::table('cook_storage')->insert(compact('file', 'hash'));
 	}
 
 	// Delete a row from the storage table.
-	public function delete($migration, $file, $result)
+	public function delete($file, $result)
 	{
 		$hash = hash(static::$algo, $result);
 
-		return  DB::table('cook_storage')->where_migration_and_file_and_hash($migration, $file, $hash)->delete();
+		return  DB::table('cook_storage')->where_file_and_hash($file, $hash)->delete();
 	}
 
 	// Create the database file hashes storage table used by Generator.
@@ -28,14 +28,12 @@ class Storage {
 		Laravel\Schema::table('cook_storage', function($table)
 		{
 			$table->create();
-			
-			$table->string('migration', 200);
 
 			$table->string('file', 200);
 
 			$table->string('hash', 50);
 
-			$table->primary(array('migration', 'file', 'hash'));
+			$table->primary(array('file', 'hash'));
 		});
 
 		echo "Cook: Storage table created successfully.";
