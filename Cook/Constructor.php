@@ -26,16 +26,18 @@ class Constructor extends Fluent {
 
 
 	// Adds multiform bundle name
-	public function setBundle($bundleName)
+	public function setMigration($migration)
 	{
-		$this->bundleName = $bundleName;
+		$this->migration = $migration['name'];
 
-		$this->addMultiformAttributes('bundle', $bundleName);
+		$this->bundleName = $migration['bundle']; // WTF
+
+		$this->addMultiformAttributes('bundle', $this->bundleName);
 
 		return $this;
 	}
 
-	// Adds multiform table AND relations names
+	// Adds multiform table AND (WTF) relations names
 	public function setTable(Table $table)
 	{
 		$this->addMultiformAttributes('table', $table->name);
