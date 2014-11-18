@@ -32,8 +32,6 @@ class Storage {
 			$table->string('file', 200);
 
 			$table->string('hash', 50);
-
-			$table->primary(array('file', 'hash'));
 		});
 
 		echo "Cook: Storage table created successfully.";
