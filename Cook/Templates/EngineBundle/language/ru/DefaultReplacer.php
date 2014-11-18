@@ -2,6 +2,11 @@
 
 class DefaultReplacer {
 
+	public function renameFile($c)
+	{
+		return $c->tables;
+	}
+
 	public function labels($c)
 	{
 		foreach ($c->columns() as $column) 

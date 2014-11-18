@@ -3,7 +3,7 @@
 return array(
 	'controllers' => array(
 		'admin' => array(
-			'default' => array(
+			'<tables>' => array(
 				'titles' => array(
 					'index' => '<Tables>',
 					'add' => 'Добавить <Table>',

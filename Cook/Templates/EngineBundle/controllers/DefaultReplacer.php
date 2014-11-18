@@ -4,6 +4,11 @@ use Laravel\Str;
 
 class DefaultReplacer {
 
+	public function renameFile($c)
+	{
+		return $c->tables;
+	}
+
 	public function with($c)
 	{
 		if (!$c->relations()) 

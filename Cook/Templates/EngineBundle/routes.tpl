@@ -5,5 +5,5 @@
 	->resource(array(
 		'submodule' => 'admin', 
 		'bundle' => '<bundles>',
-		'controller' => 'default'
+		'controller' => '<tables>'
 	));*/

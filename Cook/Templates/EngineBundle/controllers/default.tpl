@@ -1,6 +1,6 @@
 <?php
 
-class <controllerPrefix>_Admin_Default_Controller {
+class <controllerPrefix>_Admin_<Tables>_Controller {
 
 	public function __construct()
 	{
