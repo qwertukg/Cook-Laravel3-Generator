@@ -120,37 +120,13 @@ class Template {
 	// and set them to template token proterty as key.
 	protected function findTokens()
 	{
-		foreach ($this->templates as $i => $template) 
+		foreach ($this->templates as $template) 
 		{
 			$template->tokens = $this->getTokens($template->content);
 			$template->tabs = $this->getTabs($template->content, $template->tokens);
 		}
 	}
-
-	// Get tokens from string
-	protected function getTokens($content)
-	{
-		$result = array();
-
-		preg_match_all('#\<[A-z]+?\>#', $content, $result);
-
-		return $result[0];
-	}
-
-	protected function getTabs($content, $tokens)
-	{
-		$result = array();
-
-		preg_match_all('#\t*\<[A-z]+?\>#', $content, $result);
-
-		foreach ($result[0] as $i => $line) 
-		{
-			$result[0][$i] = strspn($line, "\t");
-		}
-
-		return $result[0];
-	}
-
+	
 	// Get replacers for each template by invoking all replace methods, 
 	// and set them to template token proterty as value.
 	protected function findReplacers()
@@ -167,6 +143,30 @@ class Template {
 		{
 			$template->path = substr(str_replace($this->root, '', $template->root), 1);
 		}
+	}
+
+	// Get tokens from string
+	private function getTokens($content)
+	{
+		$result = array();
+
+		preg_match_all('#\<[A-z]+?\>#', $content, $result);
+
+		return $result[0];
+	}
+
+	private function getTabs($content, $tokens)
+	{
+		$result = array();
+
+		preg_match_all('#\t*\<[A-z]+?\>#', $content, $result);
+
+		foreach ($result[0] as $i => $line) 
+		{
+			$result[0][$i] = strspn($line, "\t");
+		}
+
+		return $result[0];
 	}
 
 }

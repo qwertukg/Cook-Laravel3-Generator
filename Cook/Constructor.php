@@ -86,7 +86,7 @@ class Constructor extends Fluent {
 
 			if (!isset($template->replacers[$i]) and isset($this->attributes[$nakedToken]))
 			{
-				$tabs = str_repeat("\t", $template->tabs[$i]);
+				$tabs = str_repeat(T, $template->tabs[$i]);
 
 				$template->replacers[$i] = $tabs . $this->$nakedToken;
 			}
@@ -104,11 +104,11 @@ class Constructor extends Fluent {
 
 			if (!isset($template->replacers[$i]) and is_object($template->replacerObject))
 			{
-				$this->result->tabs = str_repeat("\t", $template->tabs[$i]);
+				$this->result->tabs = str_repeat(T, $template->tabs[$i]);
+
+				$template->newName = Replacer::renameFile($template->replacerObject, $this);
 
 				$template->replacers[$i] = Replacer::runCommand($template->replacerObject, $nakedToken, $this);
-
-				$template->newName = Replacer::renameFile($template->replacerObject, $this); // TODO WTF?
 			}
 		}
 
@@ -120,7 +120,7 @@ class Constructor extends Fluent {
 	{
 		foreach ($template->tokens as $i => $token) 
 		{
-			if (!isset($template->replacers[$i]))
+			if (!array_key_exists($i, $template->replacers))
 			{
 				throw new CException("Replacer '$token' not found for template '$template->name' in '$template->root'.");
 			}
@@ -140,6 +140,8 @@ class Constructor extends Fluent {
 		$defaultValue = Str::lower(Str::singular($value));
 
 		// Add all forms tokens
+		$this->attributes[$defaultToken.'Name'] = $value;
+
 		$this->attributes[$defaultToken] = $defaultValue;
 		$this->attributes[Str::title($defaultToken)] = Str::title($defaultValue);
 		$this->attributes[Str::plural($defaultToken)] = Str::plural($defaultValue);

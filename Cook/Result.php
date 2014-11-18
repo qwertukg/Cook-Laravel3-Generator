@@ -4,6 +4,8 @@ class Result {
 
 	public $result;
 
+	public $tabs;
+
 	public function reset()
 	{
 		$this->result = null;

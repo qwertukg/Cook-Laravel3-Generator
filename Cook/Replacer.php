@@ -11,6 +11,8 @@ class Replacer {
 		{
 			return $replacerObject->renameFile($constructor);
 		}
+
+		return null;
 	}
 
 	public static function runCommand($replacerObject, $method, Constructor $constructor)
@@ -19,6 +21,8 @@ class Replacer {
 		{
 			return $replacerObject->$method($constructor);
 		}
+
+		throw new CException("Method '$method' not found in ". get_class($replacerObject) . '.');
 	}
 
 }

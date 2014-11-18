@@ -24,15 +24,16 @@ class Generator {
 	{
 		$this->storage = new Storage;
 
+		$this->root = Bundle::path($template->constructor->bundleName);
+		
 		$this->templateRoot = $template->root;
 
 		$this->templates = $template->templates;
 
 		$this->constructor = $template->constructor;
 
-		$this->root = Bundle::path($template->constructor->bundleName);
-
 		$this->setTemplateResult();
+
 		$this->setTemplateResultPaths();
 
 		return $this;

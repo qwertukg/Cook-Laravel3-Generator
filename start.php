@@ -1,4 +1,11 @@
 <?php
+
+define('Q', '\'');
+
+define('QQ', '"');
+
+define('T', "\t");
+
 Autoloader::namespaces(array(
 	'Cook' => Bundle::path('cook').'Cook',
 ));
