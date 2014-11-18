@@ -50,7 +50,10 @@ class Generator {
 	{
 		foreach ($this->templates as $template) 
 		{
-			$template->result = str_replace($template->tokens, $template->replacers, $template->content);
+			ksort($template->replacers);
+			ksort($template->tokens);
+			
+			$template->result = str_replace($template->tokens, array_values($template->replacers), $template->content);
 		}
 	}
 

@@ -1,6 +1,6 @@
 <?php
 
-class <bundleName>_Admin_Default_Controller {
+class <controllerPrefix>_Admin_Default_Controller {
 
 	public function __construct()
 	{

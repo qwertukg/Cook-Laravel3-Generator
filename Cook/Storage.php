@@ -37,5 +37,4 @@ class Storage {
 		echo "Cook: Storage table created successfully.";
 	}
 
-
 }

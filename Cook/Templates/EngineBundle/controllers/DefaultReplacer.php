@@ -1,5 +1,7 @@
 <?php namespace Cook\Templates\EngineBundle\Controllers;
 
+use Laravel\Str;
+
 class DefaultReplacer {
 
 	public function with($c)
@@ -19,6 +21,11 @@ class DefaultReplacer {
 		$c->result->addLn('));');
 
 		return $c->result->get();
+	}
+
+	public function controllerPrefix($c)
+	{
+		return Str::title($c->bundleName);
 	}
 
 }

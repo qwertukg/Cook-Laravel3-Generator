@@ -28,7 +28,7 @@ class Constructor extends Fluent {
 	// Adds multiform bundle name
 	public function setMigration($migration)
 	{
-		$this->bundleName = $migration['bundle']; // WTF
+		$this->bundleName = $migration['bundle'];
 
 		$this->addMultiformAttributes('bundle', $this->bundleName);
 

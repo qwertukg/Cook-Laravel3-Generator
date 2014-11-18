@@ -19,7 +19,7 @@ class Replacer {
 	{
 		if (method_exists($replacerObject, $method)) 
 		{
-			return $replacerObject->$method($constructor);
+			return $replacerObject->{$method}($constructor);
 		}
 
 		throw new CException("Method '$method' not found in ". get_class($replacerObject) . '.');
