@@ -6,6 +6,14 @@ class Storage {
 
 	protected static $algo = 'md5';
 
+	// get a row from the storage table.
+	public function get($file, $result)
+	{
+		$hash = hash(static::$algo, $result);
+
+		return  DB::table('cook_storage')->where_file_and_hash($file, $hash)->first();
+	}
+
 	// Log a file hash in the storage table.
 	public function log($file, $result)
 	{

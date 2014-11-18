@@ -87,6 +87,28 @@ class Generator {
 					echo 'Cook: ' . $template->resultPathFromBundle . ' created!' . PHP_EOL;
 				}
 			}
+			else // If file exists.
+			{
+				$existingFile = File::get($template->resultPathWithFilename);
+
+				// If file in storage.
+				if ($storedFile = $this->storage->get($template->resultPathFromBundle, $existingFile))
+				{
+					File::put($template->resultPathWithFilename, $template->result);
+
+					// Remove old file from storage.
+					$this->storage->delete($template->resultPathFromBundle, $existingFile);
+					
+					// Put new file in storage.
+					$this->storage->log($template->resultPathFromBundle, $template->result);
+
+					echo 'Cook: ' . $template->resultPathFromBundle . ' replaced!' . PHP_EOL;
+				}
+				else
+				{
+
+				}
+			}
 		}
 	}
 
