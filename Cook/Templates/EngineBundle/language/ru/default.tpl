@@ -5,9 +5,9 @@ return array(
 		'admin' => array(
 			'default' => array(
 				'titles' => array(
-					'index' => '',
-					'add' => '',
-					'edit' => '',
+					'index' => '<Tables>',
+					'add' => 'Добавить <Table>',
+					'edit' => 'Изменить <Table>',
 				)
 			)
 		)

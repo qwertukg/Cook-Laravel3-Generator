@@ -11,7 +11,7 @@ class ModelReplacer {
 	{
 		foreach ($c->columns() as $column) 
 		{
-			$c->result->addLn("'$column->name',");
+			$c->result->addLn(Q.$column->name.','.Q);
 		}
 
 		return $c->result->get();
@@ -21,9 +21,7 @@ class ModelReplacer {
 	{
 		foreach ($c->columns() as $column) 
 		{
-			$rule = ($column->rule) ? $column->rule : 'required';
-
-			$c->result->addLn("'$column->name' => '$rule',");
+			$c->result->addLn(Q.$column->name.Q.' => '.Q.($column->rule ? $column->rule : 'required').Q.',');
 		}
 
 		return $c->result->get();
@@ -33,11 +31,11 @@ class ModelReplacer {
 	{
 		foreach ($c->relations() as $relation) 
 		{
-			$c->result->addLn('public function ' . $relation->name . '()');
+			$c->result->addLn('public function '.$relation->name.'()');
 
 			$c->result->addLn('{');
 
-			$c->result->addLn("\t" . 'return $this->belongs_to(IoC::resolve(\'' . $relation->Name . "Model'));");
+			$c->result->addLn(T.'return $this->belongs_to(IoC::resolve('.Q.$relation->Name.'Model'.Q.'));');
 
 			$c->result->addLn('}');
 		}
