@@ -11,7 +11,7 @@ class Migrator extends LaravelMigrator {
 	 */
 	public function __destruct()
 	{
-		IoC::resolve('ConstructorStorage')->show();
+		IoC::resolve('Generator')->run();
 	}
 
 	/**
@@ -42,7 +42,7 @@ class Migrator extends LaravelMigrator {
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			
 			// Add bundle to Generator
-			IoC::resolve('ConstructorStorage')->addBundle($migration['bundle']);
+			IoC::resolve('Generator')->addBundle($migration['bundle']);
 
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -96,7 +96,7 @@ class Migrator extends LaravelMigrator {
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			
 			// Add bundle to Generator
-			IoC::resolve('ConstructorStorage')->addBundle($migration['bundle']);
+			IoC::resolve('Generator')->addBundle($migration['bundle']);
 
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			

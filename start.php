@@ -1,35 +1,25 @@
 <?php
 
-define('Q', '\'');
-
-define('QQ', '"');
-
-define('T', "\t");
-
 Autoloader::namespaces(array(
 	'Cook' => Bundle::path('cook').'Cook',
 ));
-
-IoC::register('Replacer', function()
-{
-	return new Cook\Replacer;
-});
-
-IoC::singleton('Constructor', function()
-{
-	return new Cook\Constructor;
-});
-
-IoC::register('Template', function()
-{
-	return new Cook\Template;
-});
 
 IoC::register('Generator', function()
 {
 	return new Cook\Generator;
 });
 
+IoC::register('Constructor', function()
+{
+	return new Cook\Constructor;
+});
+
+IoC::singleton('ConstructorStorage', function()
+{
+	return new Cook\Constructor\Storage;
+});
+
+// Redeclare Migrator
 IoC::register('task: migrate', function()
 {
 	$database = new Laravel\CLI\Tasks\Migrate\Database;
