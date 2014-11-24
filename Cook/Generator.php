@@ -5,9 +5,9 @@ use Laravel\IoC;
 
 class Generator extends Schema {
 
-	// binds each executed Constructor with current bundles in storage
 	public static function execute($constructor)
 	{
+		// Binds each executed constructor with current bundles in storage.
 		IoC::resolve('ConstructorStorage')->addConstructor($constructor);
 		
 		return parent::execute($constructor);
