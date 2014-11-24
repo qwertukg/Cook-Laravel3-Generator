@@ -4,8 +4,13 @@ use Laravel\Database\Schema\Table;
 use Laravel\Fluent;
 
 class Constructor extends Table {
-	
+
+	public $bundle;
+
+	public $name;
+
 	public $static = array();
+
 	public $elements = array();
 
 	public function __get($key)
@@ -36,52 +41,6 @@ class Constructor extends Table {
 		$name = (count($name) > 0) ? $name[0] : true;
 
 		return $this->elements[$name] = new Fluent(compact('type', 'name'));
-	}
-
-	/**
-	 * Create a new fluent command instance.
-	 *
-	 * @param  string  $type
-	 * @param  array   $parameters
-	 * @return Fluent
-	 */
-	protected function command($type, $parameters = array())
-	{
-		$parameters = array_merge(compact('type'), $parameters);
-
-		if (isset($parameters['name']))
-		{
-			$object = $this->commands[$parameters['name']] = new Fluent($parameters);
-		}
-		else
-		{
-			$object = $this->commands[] = new Fluent($parameters);
-		}
-
-		return $object;
-	}
-
-	/**
-	 * Create a new fluent column instance.
-	 *
-	 * @param  string  $type
-	 * @param  array   $parameters
-	 * @return Fluent
-	 */
-	protected function column($type, $parameters = array())
-	{
-		$parameters = array_merge(compact('type'), $parameters);
-
-		if (isset($parameters['name']))
-		{
-			$object = $this->columns[$parameters['name']] = new Fluent($parameters);
-		}
-		else
-		{
-			$object = $this->columns[] = new Fluent($parameters);
-		}
-
-		return $object;
 	}
 
 }

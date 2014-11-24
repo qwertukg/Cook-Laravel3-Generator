@@ -5,8 +5,11 @@ use Cook\Constructor;
 
 class Storage extends Fluent {
 
-	protected $__storage = array();
-	protected $__result = array();
+	protected $storage = array();
+
+	protected $columns = array();
+
+	protected $result = array();
 
 	protected $currentBundle;
 
@@ -14,62 +17,64 @@ class Storage extends Fluent {
 	{
 		$this->currentBundle = $bundle;
 
-		if (!isset($this->__storage[$bundle]))
+		if (!isset($this->storage[$bundle]))
 		{
-			$this->__storage[$bundle] = array();
+			$this->storage[$bundle] = array();
 		}
 	}
 
-	public function addTable(Constructor $constructor)
+	public function addConstructor(Constructor $constructor)
 	{
-		if (! $this->currentBundle) 
+		if ($this->currentBundle) 
 		{
-			throw new \Exception('Undefinded current bundle. Invoke Cook\Constructor\Storage::addBundle() befor Cook\Constructor\Storage::addTable().', 1);
+			$this->storage[$this->currentBundle][$constructor->name][] = $constructor;
 		}
-
-		$this->__storage[$this->currentBundle][] = $constructor;
 	}
 
 	public function show()
 	{
-		$this->merge();
+		$this->mergeColumns();
 
-		print_r($this);
+		print_r( $this->result );
 	}
 
-	protected function merge()
+	protected function mergeColumns()
 	{
-		foreach ($this->__storage as $bundleName => $constructors) 
+		foreach ($this->storage as $bundleName => $tables) 
 		{
-			$this->$bundleName = new static;
+			$this->columns = array();
 
-			unset($this->$bundleName->__storage, $this->$bundleName->__result, $this->$bundleName->currentBundle);
-
-			foreach ($constructors as $constructor) 
+			foreach ($tables as $tableName => $constructors) 
 			{
-				$constructorName = $constructor->name;
-
-				foreach ($constructor->commands as $command) 
+				foreach ($constructors as $constructor) 
 				{
-					$columns = ($command->columns) ? $command->columns : $constructor->columns;
+					foreach ($constructor->commands as $command) 
+					{
+						$columns = ($command->columns) ? $command->columns : $constructor->columns;
 
-					$this->{$command->type}($columns);
+						$this->{$command->type}($columns);
+					}
 
-					$constructor->columns = $this->__result;
+					unset($constructor->commands);
+					unset($constructor->connection);
+					unset($constructor->engine);
 
-					$this->$bundleName->$constructorName = $constructor;
+					$constructor->columns = $this->columns;
+					$constructor->bundle = $bundleName;
 				}
+
+				$this->result[$tableName] = $constructor;
+
+				unset($this->storage[$bundleName][$tableName]);
 			}
 		}
-
-		unset($this->__storage, $this->__result, $this->currentBundle);
 	}
 
 	protected function create($columns)
 	{
 		foreach ($columns as $column) 
 		{
-			$this->__result[$column->name] = $column;
+			$this->columns[$column->name] = $column;
 		}
 	}
 
@@ -77,20 +82,20 @@ class Storage extends Fluent {
 	{
 		foreach ($columns as $column) 
 		{
-			$this->__result[$column->name] = $column;
+			$this->columns[$column->name] = $column;
 		}
 	}
 
 	protected function drop($columns)
 	{
-		$this->__result = array();
+		$this->columns = array();
 	}
 
 	protected function drop_column($columns)
 	{
 		foreach ($columns as $column) 
 		{
-			unset($this->__result[$column]);
+			unset($this->columns[$column]);
 		}
 	}
 
