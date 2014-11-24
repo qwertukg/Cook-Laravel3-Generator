@@ -5,12 +5,12 @@ use Laravel\IoC;
 
 class Generator extends Schema {
 
-	public static function execute($constructor)
+	// Binds each executed constructor with current bundles in storage.
+	public static function execute($table)
 	{
-		// Binds each executed constructor with current bundles in storage.
-		IoC::resolve('ConstructorStorage')->addConstructor($constructor);
+		IoC::resolve('ConstructorStorage')->addConstructor($table);
 		
-		return parent::execute($constructor);
+		return parent::execute($table);
 	}
 
 	/**
@@ -24,7 +24,7 @@ class Generator extends Schema {
 	{
 		call_user_func($callback, $table = new Constructor($table));
 
-		return static::execute($table);
+		return self::execute($table);
 	}
 
 	/**
@@ -45,7 +45,7 @@ class Generator extends Schema {
 
 		call_user_func($callback, $table);
 
-		return static::execute($table);
+		return self::execute($table);
 	}
 
 	/**
@@ -66,7 +66,7 @@ class Generator extends Schema {
 		// the execute method as calling a Closure isn't needed.
 		$table->drop();
 
-		return static::execute($table);
+		return self::execute($table);
 	}
 
 }
