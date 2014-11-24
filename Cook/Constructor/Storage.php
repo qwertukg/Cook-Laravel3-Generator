@@ -9,7 +9,7 @@ class Storage extends Fluent {
 
 	protected $columns = array();
 
-	protected $result = array();
+	protected $constructors = array();
 
 	protected $currentBundle;
 
@@ -33,12 +33,12 @@ class Storage extends Fluent {
 
 	public function show()
 	{
-		$this->mergeColumns();
+		$this->merge();
 
-		print_r( $this->result );
+		print_r( $this->constructors );
 	}
 
-	protected function mergeColumns()
+	protected function merge()
 	{
 		foreach ($this->storage as $bundleName => $tables) 
 		{
@@ -55,15 +55,13 @@ class Storage extends Fluent {
 						$this->{$command->type}($columns);
 					}
 
-					unset($constructor->commands);
-					unset($constructor->connection);
-					unset($constructor->engine);
+					unset($constructor->commands, $constructor->connection, $constructor->engine);
 
 					$constructor->columns = $this->columns;
 					$constructor->bundle = $bundleName;
 				}
 
-				$this->result[$tableName] = $constructor;
+				$this->constructors[$tableName] = $constructor;
 
 				unset($this->storage[$bundleName][$tableName]);
 			}
