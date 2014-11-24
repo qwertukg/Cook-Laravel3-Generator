@@ -2,6 +2,7 @@
 
 use Laravel\Database\Schema\Table;
 use Laravel\Fluent;
+use Laravel\IoC;
 
 class Constructor extends Table {
 
@@ -15,6 +16,11 @@ class Constructor extends Table {
 
 	public function __get($key)
 	{
+		if ($key === 'root') 
+		{
+			return IoC::resolve('ConstructorStorage')->constructors;
+		}
+
 		if (array_key_exists($key, $this->static))
 		{
 			return $this->static[$key];

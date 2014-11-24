@@ -5,11 +5,11 @@ use Cook\Constructor;
 
 class Storage extends Fluent {
 
+	public $constructors = array();
+
 	protected $storage = array();
 
 	protected $columns = array();
-
-	protected $constructors = array();
 
 	protected $currentBundle;
 
@@ -31,69 +31,62 @@ class Storage extends Fluent {
 		}
 	}
 
-	public function show()
-	{
-		$this->merge();
-
-		print_r( $this->constructors );
-	}
-
-	protected function merge()
+	public function merge()
 	{
 		foreach ($this->storage as $bundleName => $tables) 
 		{
-			$this->columns = array();
-
 			foreach ($tables as $tableName => $constructors) 
 			{
+				if (!isset($this->columns[$tableName]))
+				{
+					$this->columns[$tableName] = array();
+				}
+
 				foreach ($constructors as $constructor) 
 				{
 					foreach ($constructor->commands as $command) 
 					{
 						$columns = ($command->columns) ? $command->columns : $constructor->columns;
 
-						$this->{$command->type}($columns);
+						$this->{$command->type}($columns, $tableName);
 					}
 
-					unset($constructor->commands, $constructor->connection, $constructor->engine);
-
-					$constructor->columns = $this->columns;
 					$constructor->bundle = $bundleName;
+					$constructor->columns = $this->columns[$constructor->name];
+					$this->constructors[$tableName] = $constructor;
+					
+					unset($constructor->commands, $constructor->connection, $constructor->engine);
 				}
-
-				$this->constructors[$tableName] = $constructor;
-
-				unset($this->storage[$bundleName][$tableName]);
 			}
 		}
 	}
 
-	protected function create($columns)
+	protected function create($columns, $tableName)
 	{
 		foreach ($columns as $column) 
 		{
-			$this->columns[$column->name] = $column;
+			$this->columns[$tableName][$column->name] = $column;
 		}
 	}
 
-	protected function add($columns)
+	protected function add($columns, $tableName)
 	{
 		foreach ($columns as $column) 
 		{
-			$this->columns[$column->name] = $column;
+			$this->columns[$tableName][$column->name] = $column;
 		}
 	}
 
-	protected function drop($columns)
+	protected function drop($columns, $tableName)
 	{
-		$this->columns = array();
+		$this->columns[$tableName] = array();
 	}
 
-	protected function drop_column($columns)
+	protected function drop_column($columns, $tableName)
 	{
 		foreach ($columns as $column) 
 		{
-			unset($this->columns[$column]);
+			unset($this->columns[$tableName][$column]);
 		}
 	}
 

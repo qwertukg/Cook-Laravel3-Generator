@@ -11,7 +11,9 @@ class Migrator extends LaravelMigrator {
 	 */
 	public function __destruct()
 	{
-		IoC::resolve('ConstructorStorage')->show();
+		IoC::resolve('ConstructorStorage')->merge();
+
+		print_r( IoC::resolve('ConstructorStorage')->constructors ); 
 	}
 
 	/**
