@@ -6,9 +6,7 @@ use Cook\Storage;
 
 class Migrator extends LaravelMigrator {
 
-	/**
-	 * Run Generator after all migration
-	 */
+	// Run Generator after all migration.
 	public function __destruct()
 	{
 		IoC::resolve('ConstructorStorage')->merge();
@@ -43,7 +41,7 @@ class Migrator extends LaravelMigrator {
 		{
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			
-			// Add bundle to Generator
+			// Add bundle to Generator.
 			IoC::resolve('ConstructorStorage')->addBundle($migration['bundle']);
 
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -97,7 +95,7 @@ class Migrator extends LaravelMigrator {
 		{
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			
-			// Add bundle to Generator
+			// Add bundle to Generator.
 			IoC::resolve('ConstructorStorage')->addBundle($migration['bundle']);
 
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
