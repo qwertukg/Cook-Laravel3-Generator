@@ -6,19 +6,40 @@ use Laravel\IoC;
 
 class Constructor extends Table {
 
-	// Add bundle name to constructor.
+	/**
+	 * Add bundle name to constructor.
+	 * 
+	 * @var string
+	 */
 	public $bundle;
 
-	// Up name property to top.
+	/**
+	 * Up name property to top.
+	 * 
+	 * @var string
+	 */
 	public $name;
 
-	// Add container for new properties.
+	/**
+	 * Add container for new properties.
+	 * 
+	 * @var array
+	 */
 	public $static = array();
 
-	// Add container for new elements.
+	/**
+	 * Add container for new elements.
+	 * 
+	 * @var array
+	 */
 	public $elements = array();
 
-	// Get not setting properties getting from static container.
+	/**
+	 * Get not setting properties getting from static container.
+	 * 
+	 * @param  string $key
+	 * @return string
+	 */
 	public function __get($key)
 	{
 		// If property name is 'root' return all constructors.
@@ -34,25 +55,45 @@ class Constructor extends Table {
 		}
 	}
 
-	// Add not setting properties to static container.
+	/**
+	 * Add not setting properties to static container.
+	 * 
+	 * @param string $key
+	 * @param string $value
+	 */
 	public function __set($key, $value)
 	{
 		$this->static[$key] = $value;
 	}
 
-	// Determine is property static.
+	/**
+	 * Determine is property static.
+	 * 
+	 * @param  string  $key
+	 * @return boolean
+	 */
 	public function __isset($key)
 	{
 		return isset($this->static[$key]);
 	}
 
-	// Remove property from static container.
+	/**
+	 * Remove property from static container.
+	 * 
+	 * @param string $key
+	 */
 	public function __unset($key)
 	{
 		unset($this->static[$key]);
 	}
 
-	// Add element to container with type and name;
+	/**
+	 * Add element to container with type and name.
+	 * 
+	 * @param  string $type
+	 * @param  string $name
+	 * @return Fluent
+	 */
 	public function __call($type, $name)
 	{
 		$name = (count($name) > 0) ? $name[0] : true;
