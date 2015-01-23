@@ -34,27 +34,27 @@ Usage
 
 Create empty budnle and write usual migration for him, like this:
 ```php
-    class Attributes_Create_Attributes_Table {
-    
-    	public function up()
-    	{
-    		Schema::table('attributes', function($t)
-    		{
-    			$t->create();
-    			$t->increments('id');
-    			$t->string('title');
-    			$t->text('description');
-    			$t->integer('value_id')->unsigned();
-    			$t->timestamps();
-    		});
-    	}
-    
-    	public function down()
-    	{
-    		Schema::drop('attributes');
-    	}
-    
-    }
+class Attributes_Create_Attributes_Table {
+
+	public function up()
+	{
+		Schema::table('attributes', function($t)
+		{
+			$t->create();
+			$t->increments('id');
+			$t->string('title');
+			$t->text('description');
+			$t->integer('value_id')->unsigned();
+			$t->timestamps();
+		});
+	}
+
+	public function down()
+	{
+		Schema::drop('attributes');
+	}
+
+}
 ```
 
 To afford Cook generating code for this bundle replace native Laravel Schema by Cook Schema. Just add `use Cook\Laravel\Schema;` before Migration class.
@@ -77,7 +77,8 @@ Let's create new template who generate just one language file:
  - by Laravel3 convention, language file locate in **language\ru** folder, make this
  - make **deafult.tpl** file, it will be static template for our language
  - write static content over there, like this: 
-
-    return array(
-    	&lt;labels&gt;
-    );
+```php
+return array(
+	&lt;labels&gt;
+);
+```
