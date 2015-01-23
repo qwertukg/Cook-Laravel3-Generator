@@ -5,6 +5,7 @@ Description
 -----------
 
 Improves Laravel3 Migrator.
+
 Allows generating bundles, with all stuff, from Laravel3 migrations, by your own templates.
 
 Instalation
@@ -22,7 +23,6 @@ After this start Cook manually in your main route.php file:
 ```php
 Bundle::start('cook');
 ``` 
-at the begining of your main route.php file.
 
 Last step, is installing Cook Storage. It's not allows regenerate changing files. Open CLI and run Artisan command: 
 ```bash
