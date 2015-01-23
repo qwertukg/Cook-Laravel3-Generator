@@ -18,9 +18,16 @@ return array(
     'cook'
 );
 ```
-After this start Cook manually. Add `Bundle::start('cook');` at the begining of your main route.php file.
+After this start Cook manually in your main route.php file:
+```php
+Bundle::start('cook');
+``` 
+at the begining of your main route.php file.
 
-Last step, is installing Cook Storage. It's not allows regenerate changing files. Open CLI and run Artisan command `php artisan migrate:install_cook`
+Last step, is installing Cook Storage. It's not allows regenerate changing files. Open CLI and run Artisan command: 
+```bash
+php artisan migrate:install_cook
+```
 
 **Instalation done!**
 
@@ -57,7 +64,10 @@ class Attributes_Create_Attributes_Table {
 }
 ```
 
-To afford Cook generating code for this bundle replace native Laravel Schema by Cook Schema. Just add `use Cook\Laravel\Schema;` before Migration class.
+To afford Cook generating code for this bundle - replace native Laravel Schema by Cook Schema. Just add:
+```php
+use Cook\Laravel\Schema;
+``` 
 
 And then you wil run you migration, just add `--tpl=EngineBundle` after `migrate` command. And Cook create all code for you! 
 
