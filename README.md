@@ -33,7 +33,7 @@ Usage
 > nativ Larevel3.
 
 Create empty budnle and write usual migration for him, like this:
-
+```php
     class Attributes_Create_Attributes_Table {
     
     	public function up()
@@ -55,7 +55,7 @@ Create empty budnle and write usual migration for him, like this:
     	}
     
     }
-
+```
 
 To afford Cook generating code for this bundle replace native Laravel Schema by Cook Schema. Just add `use Cook\Laravel\Schema;` before Migration class.
 
