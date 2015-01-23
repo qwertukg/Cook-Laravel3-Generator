@@ -1,72 +1,169 @@
 <?php namespace Cook;
 
-use Laravel\Database\Schema;
-use Laravel\IoC;
+use Laravel\Bundle;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use Symfony\Component\Console\Input\ArgvInput;
+use Laravel\File;
 
-class Generator extends Schema {
+class Generator {
 
-	// Binds each executed constructor with current bundles in storage.
-	public static function execute($table)
+	// Bundle name where migration is set
+	public $root;
+
+	// Where root folder of current template
+	public $templateRoot;
+
+	// Constructor container
+	public $constructor;
+
+	// Templates collection
+	public $templates;
+
+	public function setTemplate(Template $template)
 	{
-		IoC::resolve('ConstructorStorage')->addConstructor($table);
+		$this->storage = new Storage;
+
+		$this->root = Bundle::path($template->constructor->bundleName);
 		
-		return parent::execute($table);
+		$this->templateRoot = $template->root;
+
+		$this->templates = $template->templates;
+
+		$this->constructor = $template->constructor;
+
+		$this->setTemplateResult();
+
+		$this->setTemplateResultPaths();
+
+		// $this->addWatermark();
+
+		return $this;
 	}
 
-	/**
-	 * Begin a fluent schema operation on a database table.
-	 *
-	 * @param  string   $table
-	 * @param  Closure  $callback
-	 * @return void
-	 */
-	public static function table($table, $callback)
+	public function run()
 	{
-		call_user_func($callback, $table = new Constructor($table));
+		$this->write();
 
-		return self::execute($table);
+		// print_r($this);
 	}
 
-	/**
-	 * Create a new database table schema.
-	 *
-	 * @param  string   $table
-	 * @param  Closure  $callback
-	 * @return void
-	 */
-	public static function create($table, $callback)
+	protected function setTemplateResult()
 	{
-		$table = new Constructor($table);
-
-		// To indicate that the table is new and needs to be created, we'll run
-		// the "create" command on the table instance. This tells schema it is
-		// not simply a column modification operation.
-		$table->create();
-
-		call_user_func($callback, $table);
-
-		return self::execute($table);
+		foreach ($this->templates as $template) 
+		{
+			ksort($template->replacers);
+			ksort($template->tokens);
+			
+			$template->result = str_replace($template->tokens, array_values($template->replacers), $template->content);
+		}
 	}
 
-	/**
-	 * Drop a database table from the schema.
-	 *
-	 * @param  string  $table
-	 * @param  string  $connection
-	 * @return void
-	 */
-	public static function drop($table, $connection = null)
+	protected function setTemplateResultPaths()
 	{
-		$table = new Constructor($table);
+		foreach ($this->templates as $template) 
+		{
+			$name = ($template->newName) ? $template->newName : $template->name;
 
-		$table->on($connection);
+			$template->resultPath = $this->normalizePath($this->root . DS . $template->path);
+			$template->resultPathWithFilename = $this->normalizePath($this->root . DS . $template->path . DS . $name . EXT);
+			$template->resultPathFromBundle = $this->normalizePath($this->constructor->bundleName . DS . $template->path . DS . $name . EXT);
+		}
+	}
 
-		// To indicate that the table needs to be dropped, we will run the
-		// "drop" command on the table instance and pass the instance to
-		// the execute method as calling a Closure isn't needed.
-		$table->drop();
+	protected function up()
+	{
+		foreach ($this->templates as $template) 
+		{
+			if (!is_dir($template->resultPath))
+			{
+				File::mkdir($template->resultPath);
+			}
 
-		return self::execute($table);
+			if (!File::exists($template->resultPathWithFilename))
+			{
+				if ($this->storage->log($template->resultPathFromBundle, $template->result))
+				{
+					File::put($template->resultPathWithFilename, $template->result);
+
+					echo 'Cook: Created ' . $template->resultPathFromBundle . ' file.' . PHP_EOL;
+				}
+			}
+			else // If file exists.
+			{
+				$existingFile = File::get($template->resultPathWithFilename);
+
+				// If file in storage.
+				if ($storedFile = $this->storage->get($template->resultPathFromBundle, $existingFile))
+				{
+					File::put($template->resultPathWithFilename, $template->result);
+
+					// Remove old file from storage.
+					$this->storage->delete($template->resultPathFromBundle, $existingFile);
+					
+					// Put new file in storage.
+					$this->storage->log($template->resultPathFromBundle, $template->result);
+
+					echo 'Cook: Replaced ' . $template->resultPathFromBundle . ' file.' . PHP_EOL;
+				}
+				else
+				{
+
+				}
+			}
+		}
+	}
+
+	protected function down()
+	{
+		foreach ($this->templates as $template) 
+		{
+			if (File::exists($template->resultPathWithFilename))
+			{
+				if ($this->storage->delete($template->resultPathFromBundle, File::get($template->resultPathWithFilename)))
+				{
+					File::delete($template->resultPathWithFilename);
+
+					echo 'Cook: Deleted ' . $template->resultPathFromBundle . ' file.' . PHP_EOL;
+				}
+			}
+		}
+	}
+
+	protected function write()
+	{
+
+		if ($this->constructor->command === 'create')
+		{
+			echo '------------------------------------------------------------------------' . PHP_EOL;
+			$this->up();
+			echo '------------------------------------------------------------------------' . PHP_EOL;
+		}
+
+		if ($this->constructor->command === 'drop')
+		{
+			echo '------------------------------------------------------------------------' . PHP_EOL;
+			$this->down();
+			echo '------------------------------------------------------------------------' . PHP_EOL;
+		}
+
+	}
+
+	protected function normalizePath($path)
+	{
+		$path =  preg_replace('#[/\\\\]+#', DS, $path);
+
+		return $path;
+	}
+
+	private function addWatermark()
+	{
+		$watermark = '<!-- Generated by Cook Laravel Generator -->' . PHP_EOL;
+
+		foreach ($this->templates as $template) 
+		{
+			$template->result = $watermark . $template->result;
+		}
 	}
 
 }

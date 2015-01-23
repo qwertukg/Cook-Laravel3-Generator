@@ -6,12 +6,10 @@ use Cook\Storage;
 
 class Migrator extends LaravelMigrator {
 
-	// Run Generator after all migration.
-	public function __destruct()
+	// Create the database file hashes storage table used by Generator.
+	public function install_cook()
 	{
-		IoC::resolve('ConstructorStorage')->merge();
-
-		print_r( IoC::resolve('ConstructorStorage')->constructors ); 
+		Storage::install();
 	}
 
 	/**
@@ -41,8 +39,8 @@ class Migrator extends LaravelMigrator {
 		{
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			
-			// Add bundle to Generator.
-			IoC::resolve('ConstructorStorage')->addBundle($migration['bundle']);
+			// Add bundle where migration is declared, to current Constructor 
+			IoC::resolve('Constructor')->setMigration($migration);
 
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -94,12 +92,12 @@ class Migrator extends LaravelMigrator {
 		foreach (array_reverse($migrations) as $migration)
 		{
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-			
-			// Add bundle to Generator.
-			IoC::resolve('ConstructorStorage')->addBundle($migration['bundle']);
+
+			// Add bundle where migration is declared, to current Constructor 
+			IoC::resolve('Constructor')->setMigration($migration);
 
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-			
+
 			$migration['migration']->down();
 
 			echo 'Rolled back: '.$this->display($migration).PHP_EOL;
