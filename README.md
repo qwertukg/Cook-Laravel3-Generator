@@ -72,8 +72,11 @@ use Cook\Laravel\Schema;
 And then you wil run you migration, just add `--tpl=EngineBundle` after `migrate` command. And Cook create all code for you! 
 
 > **EngineBundle** - is name of template folder.
+
 > Cook generating code just for migration **where Schema is replaced**.
+
 > Cook automaticly destroy files when you rollbak migration.
+
 > Cook **do not delete/replace** files changes by you.
 
 Templating
