@@ -75,7 +75,7 @@ And then you wil run you migration, just add `--tpl=EngineBundle` after `migrate
 
 > Cook generating code just for migration **where Schema is replaced**.
 
-> Cook automaticly destroy files when you rollbak migration.
+> Cook **automaticly destroy** files when you rollbak migration.
 
 > Cook **do not delete/replace** files changes by you.
 
