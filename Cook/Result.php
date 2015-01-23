@@ -20,7 +20,7 @@ class Result {
 		return $this;
 	}
 
-	public function addLn($string)
+	public function addLn($string = null)
 	{
 		$this->result .= $this->tabs . $string . PHP_EOL;
 		

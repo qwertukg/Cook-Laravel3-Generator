@@ -1,8 +1,5 @@
 <?php namespace Cook;
 
-use ReflectionClass;
-use Laravel\Str;
-
 class Replacer {
 
 	public static function renameFile($replacerObject, Constructor $constructor)

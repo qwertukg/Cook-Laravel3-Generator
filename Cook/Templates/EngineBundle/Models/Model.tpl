@@ -1,7 +1,7 @@
-<?php namespace <Bundle>\Models;
+<?php namespace <Bundles>\Models;
 
 use Laravel\IoC;
-use Mobileka\L3\Engine\Laravel\Base\ImageModel as BaseModel;
+use Base\Models\Model as BaseModel;
 
 class <Table> extends BaseModel {
 

@@ -109,7 +109,14 @@ class Template {
 			
 			if (File::exists($replacerPath))
 			{
-				$replacerClass = '\\Cook\\Templates\\' . $this->templateName . '\\' . $template->path . '\\' . Str::title($template->name) . 'Replacer';
+				if ($template->path)
+				{
+					$replacerClass = '\\Cook\\Templates\\' . $this->templateName . '\\' . $template->path . '\\' . Str::title($template->name) . 'Replacer';
+				}
+				else
+				{
+					$replacerClass = '\\Cook\\Templates\\' . $this->templateName . '\\' . Str::title($template->name) . 'Replacer';
+				}
 
 				$template->replacerObject = new $replacerClass;
 			}

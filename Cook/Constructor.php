@@ -24,7 +24,6 @@ class Constructor extends Fluent {
 
 	public $bundleName;
 
-
 	// Adds multiform bundle name
 	public function setMigration($migration)
 	{
@@ -161,6 +160,8 @@ class Constructor extends Fluent {
 				$relation->attributes = $this->getMultifomArray($token, $column->name);
 
 				$this->relations[] = $relation;
+
+				$column->relation($relation);
 			}
 		}
 	}

@@ -5,7 +5,7 @@ return array(
 		'admin' => array(
 			'<tables>' => array(
 				'titles' => array(
-					'index' => '<Tables>',
+					'index' => 'Список <Tables>',
 					'add' => 'Добавить <Table>',
 					'edit' => 'Изменить <Table>',
 				)

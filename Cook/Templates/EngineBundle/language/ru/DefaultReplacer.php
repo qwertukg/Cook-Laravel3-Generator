@@ -1,5 +1,7 @@
 <?php namespace Cook\Templates\EngineBundle\Language\Ru;
 
+use Laravel\Lang;
+
 class DefaultReplacer {
 
 	public function renameFile($c)
@@ -11,7 +13,15 @@ class DefaultReplacer {
 	{
 		foreach ($c->columns() as $column) 
 		{
-			$c->result->addLn(Q.$column->name.Q.' => '.Q.$column->ru.Q.',');
+			if ($column->ru)
+			{
+				$c->result->addLn(Q.$column->name.Q.' => '.Q.$column->ru.Q.',');
+			}
+
+			if ($column->relation)
+			{
+				$c->result->addLn(Q.$column->relation->name.Q.' => array(\'title\' => '.Q.$column->ru.Q.'),');
+			}
 		}
 
 		return $c->result->get();

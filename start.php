@@ -10,14 +10,14 @@ Autoloader::namespaces(array(
 	'Cook' => Bundle::path('cook').'Cook',
 ));
 
-IoC::register('Replacer', function()
-{
-	return new Cook\Replacer;
-});
-
 IoC::singleton('Constructor', function()
 {
 	return new Cook\Constructor;
+});
+
+IoC::register('Replacer', function()
+{
+	return new Cook\Replacer;
 });
 
 IoC::register('Template', function()

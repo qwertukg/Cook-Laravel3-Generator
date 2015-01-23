@@ -8,3 +8,5 @@ IoC::register('<Table>Model', function()
 {
 	return new <Bundles>\Models\<Table>;
 });
+
+require 'Crud.php';

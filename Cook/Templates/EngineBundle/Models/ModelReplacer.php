@@ -11,7 +11,7 @@ class ModelReplacer {
 	{
 		foreach ($c->columns() as $column) 
 		{
-			$c->result->addLn(Q.$column->name.','.Q);
+			$c->result->addLn(Q.$column->name.Q.',');
 		}
 
 		return $c->result->get();
@@ -21,7 +21,10 @@ class ModelReplacer {
 	{
 		foreach ($c->columns() as $column) 
 		{
-			$c->result->addLn(Q.$column->name.Q.' => '.Q.($column->rule ? $column->rule : 'required').Q.',');
+			if ( ! in_array($column->name, array('id', 'user_id', 'created_at', 'updated_at')))
+			{
+				$c->result->addLn(Q.$column->name.Q.' => '.Q.($column->rule ? $column->rule : 'required').Q.',');
+			}
 		}
 
 		return $c->result->get();
@@ -38,6 +41,8 @@ class ModelReplacer {
 			$c->result->addLn(T.'return $this->belongs_to(IoC::resolve('.Q.$relation->Name.'Model'.Q.'));');
 
 			$c->result->addLn('}');
+
+			$c->result->addLn();
 		}
 
 		return $c->result->get();

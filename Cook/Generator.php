@@ -36,7 +36,7 @@ class Generator {
 
 		$this->setTemplateResultPaths();
 
-		$this->addWatermark();
+		// $this->addWatermark();
 
 		return $this;
 	}
