@@ -79,6 +79,11 @@ And then you wil run you migration, just add `--tpl=EngineBundle` after `migrate
 Templating
 ----------
 
+Comming soon...
+
+Look [EngineBundle](https://github.com/qwertukg/Cook-Laravel-Generator/tree/master/Cook/Templates/EngineBundle) there are lot of examples ;)
+
+<!---
 Templates has own easy syntax. Write/change template easily.
 
 Let's create new template who generate just one language file:
@@ -94,5 +99,10 @@ return array(
 ```
 > ```<labels>``` is **token**. It must by replaced by **replacer**
 
-- create **DefaulReplacer.php** file. Where filename must be consits of two parts: first like .tpl filename and must have suffix **Replacer**
+- create **DefaultReplacer.php** file. Where filename must be consits of two parts: first like .tpl filename and must have suffix **Replacer**
+-->
 
+Cool stuff
+----------
+
+Comming soon...
