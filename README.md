@@ -83,12 +83,16 @@ Templates has own easy syntax. Write/change template easily.
 
 Let's create new template who generate just one language file:
 
- - go to **Cook\Templates** folder and create **MyTemplate** folder over there
- - by Laravel3 convention, language file locate in **language\ru** folder, make this
- - make **deafult.tpl** file, it will be static template for our language
- - write static content over there, like this: 
+- go to **Cook\Templates** folder and create **MyTemplate** folder over there
+- by Laravel3 convention, language file locate in **language\ru** folder, make this
+- make **deafult.tpl** file, it will be static template for our language
+- write static content over there, like this: 
 ```php
 return array(
-	&lt;labels&gt;
+	<labels>
 );
 ```
+> ```<labels>``` is **token**. It must by replaced by **replacer**
+
+- create **DefaulReplacer.php** file. Where filename must be consits of two parts: first like .tpl filename and must have suffix **Replacer**
+
