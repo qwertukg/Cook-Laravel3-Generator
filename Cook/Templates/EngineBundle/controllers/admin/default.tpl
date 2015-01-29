@@ -13,7 +13,6 @@ class <controllerPrefix>_Admin_<Tables>_Controller extends BackendController {
 		$this->model = IoC::resolve('<Table>Model');
 
 		<with>
-
 	}
 
 } 
